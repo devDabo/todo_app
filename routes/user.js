@@ -2,7 +2,7 @@ const express = require('express');
 var user = require('../model/user');
 const router = express();
 
-router.post('/createtodo',(req,res)=>{
+router.post('/',(req,res)=>{
     let users = {
         todo: "test todo"
     }
