@@ -18,15 +18,19 @@ const todoSchema = mongoose.Schema({
 
 const Todo = mongoose.model('Todo',todoSchema)
 
-//create POST req
-app.post('/createtodo', (req,res) => {
-    //create new instance of todo
-    const addTodo = new Todo({todo:"String2"})
-
-    addTodo.save((err,doc)=>{
-        if(err) return console.log(err)
-        console.log(doc)
-    })
-});
-
+app.post('/createtodo', async (req, res) => {
+    try {
+      // create new instance of todo
+      const addTodo = new Todo({
+        todo: "String3"
+      });
+  
+      const doc = await addTodo.save();
+      res.status(200).json(doc);
+    } catch (err) {
+      console.log(err);
+      res.status(500).json({ error: 'An error occurred' });
+    }
+  });
+  
 app.listen(port, () => console.log('App listening on port 4000'))
