@@ -11,30 +11,22 @@ mongoose.connect(uri, {
     useUnifiedTopology: true
 });
 
-//schema
-
+//schema will be added to separate js file later
 const todoSchema = mongoose.Schema({
     todo: String
 });
 
 const Todo = mongoose.model('Todo',todoSchema)
 
-//create logic
+//create POST req
 app.post('/createtodo', (req,res) => {
-    try {
-            //create new instance of todo
-    const addTodo = new Todo(req.body)
+    //create new instance of todo
+    const addTodo = new Todo({todo:"String2"})
 
     addTodo.save((err,doc)=>{
         if(err) return console.log(err)
         console.log(doc)
     })
-
-    } catch (err) {
-        console.log(err);
-    }
-
-
 });
 
 app.listen(port, () => console.log('App listening on port 4000'))
