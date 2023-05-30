@@ -3,8 +3,9 @@ const port = 4000;
 const app = express();
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const dotenv = require('dotenv').config();
 
-const uri = "mongodb+srv://rajchand99:rajchand99@todo.1e9gpvt.mongodb.net/?retryWrites=true";
+const uri = process.env.MONGO_URL
 
 mongoose.connect(uri, {
     useNewUrlParser: true,
@@ -26,7 +27,8 @@ app.post('/createtodo', async (req, res) => {
       });
   
       const doc = await addTodo.save();
-      res.status(200).json(doc);
+      res.status(200).json({status:"ok"});
+      console.log({status:"ok"});
     } catch (err) {
       console.log(err);
       res.status(500).json({ error: 'An error occurred' });
