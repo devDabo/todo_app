@@ -8,13 +8,15 @@ const createtodoRouter = require('../routes/createtodo');
 const uri = process.env.MONGO_URL
 const gettodoRouter = require('../routes/gettodo');
 
+//connect to mongodb
 mongoose.connect(uri, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 });
 
+//app routes
 app.use('/createtodo', createtodoRouter);
-
 app.use('/gettodo', gettodoRouter);
-  
-app.listen(port, () => console.log('App listening on port 4000'))
+
+//start server
+app.listen(port, () => console.log(`App listening on port ${port}`))
