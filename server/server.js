@@ -6,12 +6,17 @@ const bodyParser = require('body-parser');
 const dotenv = require('dotenv').config();
 const createtodoRouter = require('../routes/createtodo');
 const uri = process.env.MONGO_URL
+const gettodoRouter = require('../routes/gettodo');
 
+//connect to mongodb
 mongoose.connect(uri, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 });
 
+//app routes
 app.use('/createtodo', createtodoRouter);
-  
-app.listen(port, () => console.log('App listening on port 4000'))
+app.use('/gettodo', gettodoRouter);
+
+//start server
+app.listen(port, () => console.log(`App listening on port ${port}`))
