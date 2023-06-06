@@ -9,6 +9,8 @@ const uri = process.env.MONGO_URL
 const gettodoRouter = require('../routes/gettodo');
 const cors = require('cors');
 
+app.use(bodyParser.json());
+
 // Enable CORS
 app.use(cors());
 
