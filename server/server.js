@@ -7,6 +7,10 @@ const dotenv = require('dotenv').config();
 const createtodoRouter = require('../routes/createtodo');
 const uri = process.env.MONGO_URL
 const gettodoRouter = require('../routes/gettodo');
+const cors = require('cors');
+
+// Enable CORS
+app.use(cors());
 
 //connect to mongodb
 mongoose.connect(uri, {
