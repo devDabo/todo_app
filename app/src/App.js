@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import Form from './components/Form';
+import Table from './components/Table';
 
 class App extends Component {
   onSubmitTodo = () => {
@@ -10,6 +11,10 @@ class App extends Component {
       })
       .then(response => {
         console.log(response.data);
+        this.tableComponent.fetchTodos(); // Update the todos by calling fetchTodos in the Table component
+      })
+      .catch(error => {
+        console.log(error);
       });
   };
 
@@ -20,8 +25,9 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <Form onTodoTextChange={this.handleTodoTextChange} />
+        <Form onTodoTextChange={this.handleTodoTextChange} onSubmitTodo={this.onSubmitTodo} />
         <button onClick={this.onSubmitTodo}>Add todo</button>
+        <Table ref={instance => (this.tableComponent = instance)} />
       </div>
     );
   }
