@@ -21,6 +21,23 @@ class Table extends Component {
       });
   };
 
+  deleteTodo = (id) => {
+    if (!id) {
+      console.log('Invalid todo ID');
+      return;
+    }
+
+    axios
+      .delete(`http://localhost:4000/deletetodo/${id}`)
+      .then(response => {
+        console.log('Todo deleted successfully');
+        this.fetchTodos(); // Refresh the todo list after deletion
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+
   render() {
     const { todos } = this.state;
 
@@ -31,12 +48,16 @@ class Table extends Component {
           <thead>
             <tr>
               <th>Todo</th>
+              <th>Delete</th>
             </tr>
           </thead>
           <tbody>
             {todos.map(todo => (
               <tr key={todo.id}>
                 <td>{todo.todo}</td>
+                <td>
+                  <button onClick={() => this.deleteTodo(todo.id)}>Delete</button>
+                </td>
               </tr>
             ))}
           </tbody>
