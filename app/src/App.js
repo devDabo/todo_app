@@ -4,11 +4,15 @@ import Form from './components/Form';
 import Table from './components/Table';
 
 class App extends Component {
+  state = {
+    todoText: ''
+  };
+
   onSubmitTodo = () => {
+    const { todoText } = this.state;
+
     axios
-      .post('http://localhost:4000/createtodo', {
-        todo: this.state.todoText
-      })
+      .post('http://localhost:4000/todo', { todo: todoText })
       .then(response => {
         console.log(response.data);
         this.tableComponent.fetchTodos(); // Update the todos by calling fetchTodos in the Table component
