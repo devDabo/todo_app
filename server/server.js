@@ -4,9 +4,8 @@ const app = express();
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const dotenv = require('dotenv').config();
-const createtodoRouter = require('../routes/createtodo');
+const todoRouter = require('../routes/todo');
 const uri = process.env.MONGO_URL
-const gettodoRouter = require('../routes/gettodo');
 const cors = require('cors');
 
 app.use(bodyParser.json());
@@ -21,8 +20,8 @@ mongoose.connect(uri, {
 });
 
 //app routes
-app.use('/createtodo', createtodoRouter);
-app.use('/gettodo', gettodoRouter);
+app.use('/todo', todoRouter);
+
 
 //start server
 app.listen(port, () => console.log(`App listening on port ${port}`))
