@@ -2,17 +2,14 @@ const express = require('express');
 const router = express.Router();
 const Todo = require('../server/schema/schema');
 
-
 router.post('/', async (req, res) => {
   try {
-    // Create a new instance of Todo model
     const addTodo = new Todo({
       todo: req.body.todo
-    }
-);
+    });
 
     const doc = await addTodo.save();
-    res.status(200).json({ status: "post to mongo ok" });
+    res.status(200).json({ status: 'Todo added successfully' });
     console.log(doc);
   } catch (err) {
     console.log(err);
@@ -22,7 +19,7 @@ router.post('/', async (req, res) => {
 
 router.delete('/:id', async (req, res) => {
   try {
-    const todoId = req.params.todoId;
+    const todoId = req.params.id;
     console.log(todoId);
 
     const deletedTodo = await Todo.findByIdAndDelete(todoId);
