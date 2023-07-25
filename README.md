@@ -66,7 +66,7 @@ node server.js
 3. In a separate terminal, run the frontend React app:
 
 ```bash
-cd client
+cd app
 npm start
 ```
 
@@ -77,7 +77,7 @@ Now, the MERN todo app should be up and running at `http://localhost:3000/`.
 The app includes JEST tests to ensure the correctness of some critical components and functionalities. To run the tests, use the following command:
 
 ```bash
-cd client
+cd app
 npm test
 ```
 
@@ -87,7 +87,7 @@ npm test
 - Node.js: JavaScript runtime environment for the server-side.
 - Express: Web application framework for Node.js.
 - MongoDB: NoSQL database for storing todo items.
-- Axios: Promise-based HTTP client for making API requests.
+- Axios: Promise-based HTTP app for making API requests.
 - Jest: Testing framework for JavaScript code.
 
 ## Contributing
