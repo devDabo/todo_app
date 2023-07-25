@@ -5,7 +5,8 @@ class Table extends Component {
   state = {
     todos: [],
     editingTodoId: null,
-    editedTodoText: ''
+    editedTodoText: '',
+    completedTodos: [],
   };
 
   componentDidMount() {
@@ -14,9 +15,19 @@ class Table extends Component {
 
   fetchTodos = () => {
     axios
-      .get('http://localhost:4000/todo/${id}')
+      .get('http://localhost:4000/todo')
       .then(response => {
-        this.setState({ todos: response.data });
+        if (response.data && Array.isArray(response.data)) {
+          const completedTodos = response.data.filter(todo => todo.complete);
+          const incompleteTodos = response.data.filter(todo => !todo.complete);
+
+          this.setState({
+            todos: incompleteTodos,
+            completedTodos: completedTodos,
+          });
+        } else {
+          console.log('Invalid response data format');
+        }
       })
       .catch(error => {
         console.log(error);
@@ -33,7 +44,10 @@ class Table extends Component {
       .delete(`http://localhost:4000/todo/${id}`)
       .then(response => {
         console.log('Todo deleted successfully');
-        this.fetchTodos(); // Refresh the todo list after deletion
+        this.setState(prevState => ({
+          todos: prevState.todos.filter(todo => todo._id !== id),
+          completedTodos: prevState.completedTodos.filter(todo => todo._id !== id),
+        }));
       })
       .catch(error => {
         console.log(error);
@@ -73,9 +87,43 @@ class Table extends Component {
       });
   };
 
+  toggleComplete = (id) => {
+    const { todos, completedTodos } = this.state;
+    const todoToToggle = todos.find(todo => todo._id === id);
+
+    if (!todoToToggle) {
+      return;
+    }
+
+    const updatedTodos = todos.filter(todo => todo._id !== id);
+    todoToToggle.complete = !todoToToggle.complete;
+
+    if (todoToToggle.complete) {
+      this.setState({
+        todos: updatedTodos,
+        completedTodos: [...completedTodos, todoToToggle],
+      });
+    } else {
+      this.setState({
+        todos: [...updatedTodos, todoToToggle],
+        completedTodos: completedTodos.filter(todo => todo._id !== id),
+      });
+    }
+
+    axios
+      .put(`http://localhost:4000/todo/${id}`, { complete: todoToToggle.complete })
+      .then(response => {
+        console.log('Todo completion status updated successfully');
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+
   render() {
-    const { todos, editingTodoId, editedTodoText } = this.state;
+    const { todos, completedTodos, editingTodoId, editedTodoText } = this.state;
     console.log('Todo list:', todos);
+    console.log('Completed Todo list:', completedTodos);
     return (
       <div>
         <h2>Todo List</h2>
@@ -83,6 +131,7 @@ class Table extends Component {
           <thead>
             <tr>
               <th>Todo</th>
+              <th>Complete</th>
               <th>Edit</th>
               <th>Delete</th>
             </tr>
@@ -102,6 +151,13 @@ class Table extends Component {
                   )}
                 </td>
                 <td>
+                  <input
+                    type="checkbox"
+                    checked={todo.complete}
+                    onChange={() => this.toggleComplete(todo._id)}
+                  />
+                </td>
+                <td>
                   {editingTodoId === todo._id ? (
                     <>
                       <button onClick={() => this.saveTodo(todo._id)}>Save</button>
@@ -117,6 +173,28 @@ class Table extends Component {
               </tr>
             ))}
           </tbody>
+          {completedTodos.length > 0 && (
+            <tfoot>
+              <tr>
+                <th colSpan="4">Completed Todos:</th>
+              </tr>
+              {completedTodos.map(todo => (
+                <tr key={todo._id}>
+                  <td>{todo.todo}</td>
+                  <td>
+                    <input
+                      type="checkbox"
+                      checked={todo.complete}
+                      disabled
+                    />
+                  </td>
+                  <td>
+                    <button onClick={() => this.deleteTodo(todo._id)}>Delete</button>
+                  </td>
+                </tr>
+              ))}
+            </tfoot>
+          )}
         </table>
       </div>
     );
