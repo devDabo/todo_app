@@ -48,4 +48,27 @@ router.get('/:todoId', async (req, res) => {
   }
 });
 
+router.put('/:id', async (req, res) => {
+  try {
+    const todoId = req.params.id;
+    const newTodo = req.body.todo;
+
+    const updatedTodo = await Todo.findByIdAndUpdate(
+      todoId,
+      { todo: newTodo },
+      { new: true }
+    );
+
+    if (!updatedTodo) {
+      return res.status(404).json({ error: 'Todo not found' });
+    }
+
+    res.status(200).json({ status: 'Todo updated successfully' });
+    console.log('Updated todo:', updatedTodo);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: 'An error occurred' });
+  }
+});
+
 module.exports = router;
