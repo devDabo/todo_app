@@ -1,95 +1,105 @@
-# Todo Application with MongoDB, Express, React and Node
+# MERN Todo App
 
-This is a simple Todo application built using MongoDB, Express, React and Node. It allows users to create, read, update and delete their tasks.
+This is a simple MERN (MongoDB, Express, React, Node.js) todo app that allows users to manage their daily tasks efficiently. The app provides a user-friendly interface to create, edit, and delete todo items. In the future it will support marking tasks as completed.
+
+## Table of Contents
+
+- [Features](#features)
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+- [Running the App](#running-the-app)
+- [Testing](#testing)
+- [Technologies Used](#technologies-used)
+- [Contributing](#contributing)
+- [License](#license)
+
+## Features
+
+- Create a new todo item with a title and description.
+- Edit existing todo items to modify their details.
+- Mark tasks as completed to keep track of the progress.
+- Delete todo items when they are no longer needed.
 
 ## Prerequisites
 
-Before you get started, you will need the following:
+Before running the MERN todo app, ensure you have the following installed:
 
-- [Node.js](https://nodejs.org/) installed on your machine
-- [Studio 3T](https://studio3t.com/) installed for MongoDB database management
+- Node.js (v14 or later)
+- MongoDB
 
 ## Installation
 
-1. Clone this repository to your local machine:
+To install the necessary dependencies for the app, follow these steps:
 
-```sh
-git clone https://github.com/devdabo/todo_app.git
-```
+1. Clone the repository to your local machine:
 
-2. Navigate to the cloned repository:
-
-```sh
+```bash
+git clone https://github.com/devDabo/todo_app.git
 cd todo_app
 ```
 
-3. Install dependencies:
+2. Install frontend dependencies:
 
-```sh
+```bash
+cd app
 npm install
 ```
 
-4. Start the server:
+3. Install backend dependencies:
 
-```sh
+```bash
+cd server
+npm install
+```
+
+## Running the App
+
+1. Start the MongoDB server on your local machine.
+
+2. Run the backend server:
+
+```bash
+cd server
+node server.js
+```
+
+3. In a separate terminal, run the frontend React app:
+
+```bash
+cd client
 npm start
 ```
 
-5. Open Studio 3T and connect to your MongoDB instance. Create a new database called `todo` and a collection called `todos`.
+Now, the MERN todo app should be up and running at `http://localhost:3000/`.
 
-6. Update the MongoDB connection details in `server.js` file:
+## Testing
 
-```javascript
-const mongoose = require('mongoose');
+The app includes JEST tests to ensure the correctness of some critical components and functionalities. To run the tests, use the following command:
 
-mongoose.connect('mongodb://localhost:27017/todo', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-})
-  .then(() => {
-    console.log('Connected to MongoDB');
-  })
-  .catch((error) => {
-    console.error('Failed to connect to MongoDB', error);
-  });
+```bash
+cd client
+npm test
 ```
 
-Make sure to replace the connection string `mongodb://localhost:27017/todo` with your own MongoDB connection string.
+## Technologies Used
 
-7. Save the changes to `server.js` and restart the server.
+- React: Frontend library for building user interfaces.
+- Node.js: JavaScript runtime environment for the server-side.
+- Express: Web application framework for Node.js.
+- MongoDB: NoSQL database for storing todo items.
+- Axios: Promise-based HTTP client for making API requests.
+- Jest: Testing framework for JavaScript code.
 
-8. Navigate to `http://localhost:4000` to use the application.
+## Contributing
 
-## Usage
+Contributions to the MERN Todo App are welcome and encouraged. If you find a bug or have an idea for improvement, feel free to open an issue or submit a pull request.
 
-The Todo application provides the following endpoints:
-
-### `POST /createtodo`
-
-Creates a new task. The request body should contain the following fields:
-
-- `title` (required): the title of the task
-- `description` (optional): the description of the task
-
-### `GET /todos`
-
-Returns a list of all tasks.
-
-### `GET /todos/:id`
-
-Returns a single task with the specified ID.
-
-### `PUT /todos/:id`
-
-Updates a task with the specified ID. The request body should contain the following fields:
-
-- `title` (required): the updated title of the task
-- `description` (optional): the updated description of the task
-
-### `DELETE /todos/:id`
-
-Deletes a task with the specified ID.
+1. Fork the repository.
+2. Create a new branch for your feature: `git checkout -b feature-name`
+3. Commit your changes: `git commit -m "Add some feature"`
+4. Push to the branch: `git push origin feature-name`
+5. Open a pull request.
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+The MERN Todo App is open-source and available under the [MIT License](https://github.com/devDabo/todo_app/blob/main/LICENSE). Feel free to use, modify, and distribute the code as per the terms of the license.
