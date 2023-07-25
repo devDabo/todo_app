@@ -3,7 +3,9 @@ import axios from 'axios';
 
 class Table extends Component {
   state = {
-    todos: []
+    todos: [],
+    editingTodoId: null,
+    editedTodoText: ''
   };
 
   componentDidMount() {
@@ -22,8 +24,6 @@ class Table extends Component {
   };
 
   deleteTodo = (id) => {
-    console.log('Received todo ID:', id);
-
     if (!id) {
       console.log('Invalid todo ID');
       return;
@@ -40,8 +40,41 @@ class Table extends Component {
       });
   };
 
+  startEditing = (id, todo) => {
+    this.setState({
+      editingTodoId: id,
+      editedTodoText: todo
+    });
+  };
+
+  cancelEditing = () => {
+    this.setState({
+      editingTodoId: null,
+      editedTodoText: ''
+    });
+  };
+
+  saveTodo = (id) => {
+    const { editedTodoText } = this.state;
+    if (!editedTodoText.trim()) {
+      console.log('Todo text cannot be empty');
+      return;
+    }
+
+    axios
+      .put(`http://localhost:4000/todo/${id}`, { todo: editedTodoText })
+      .then(response => {
+        console.log('Todo updated successfully');
+        this.fetchTodos(); // Refresh the todo list after editing
+        this.cancelEditing();
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+
   render() {
-    const { todos } = this.state;
+    const { todos, editingTodoId, editedTodoText } = this.state;
     console.log('Todo list:', todos);
     return (
       <div>
@@ -50,13 +83,34 @@ class Table extends Component {
           <thead>
             <tr>
               <th>Todo</th>
+              <th>Edit</th>
               <th>Delete</th>
             </tr>
           </thead>
           <tbody>
             {todos.map(todo => (
               <tr key={todo._id}>
-                <td>{todo.todo}</td>
+                <td>
+                  {editingTodoId === todo._id ? (
+                    <input
+                      type="text"
+                      value={editedTodoText}
+                      onChange={(e) => this.setState({ editedTodoText: e.target.value })}
+                    />
+                  ) : (
+                    todo.todo
+                  )}
+                </td>
+                <td>
+                  {editingTodoId === todo._id ? (
+                    <>
+                      <button onClick={() => this.saveTodo(todo._id)}>Save</button>
+                      <button onClick={() => this.cancelEditing()}>Cancel</button>
+                    </>
+                  ) : (
+                    <button onClick={() => this.startEditing(todo._id, todo.todo)}>Edit</button>
+                  )}
+                </td>
                 <td>
                   <button onClick={() => this.deleteTodo(todo._id)}>Delete</button>
                 </td>
