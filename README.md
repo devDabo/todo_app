@@ -52,6 +52,8 @@ cd server
 npm install
 ```
 
+4. Add your Mongo URI:
+
 ## Running the App
 
 1. Start the MongoDB server on your local machine.
