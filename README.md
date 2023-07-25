@@ -1,6 +1,6 @@
 # MERN Todo App
 
-This is a simple MERN (MongoDB, Express, React, Node.js) todo app that allows users to manage their daily tasks efficiently. The app provides a user-friendly interface to create, edit, and delete todo items. In the future it will support marking tasks as completed.
+This is a simple MERN (MongoDB, Express, React, Node.js) todo app that allows users to manage their daily tasks efficiently. The app provides a user-friendly interface to create, edit, and delete todo items. This app also supports marking tasks as completed.
 
 ## Table of Contents
 
