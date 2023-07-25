@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import Form from './components/Form';
 import Table from './components/Table';
+import './App.css';
 
 class App extends Component {
   state = {
