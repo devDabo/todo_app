@@ -52,7 +52,14 @@ cd server
 npm install
 ```
 
-4. Add your Mongo URI:
+### Setting up the MongoDB Database
+
+1. You'll need to have a MongoDB database for storing the todos. If you don't have one, create a free MongoDB Atlas account or set up a local MongoDB server.
+
+2. Once you have your MongoDB URI, create a `.env` file in the `server` directory.
+
+3. Open the `.env` file and add the following line, replacing `<YOUR_MONGODB_URI>` with your actual MongoDB URI:
+
 
 ## Running the App
 
