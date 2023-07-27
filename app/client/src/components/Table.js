@@ -15,7 +15,7 @@ class Table extends Component {
 
   fetchTodos = () => {
     axios
-      .get('http://localhost:4000/todo')
+      .get('http://localhost:4000/api/todo')
       .then(response => {
         if (response.data && Array.isArray(response.data)) {
           const completedTodos = response.data.filter(todo => todo.complete);
@@ -41,7 +41,7 @@ class Table extends Component {
     }
 
     axios
-      .delete(`http://localhost:4000/todo/${id}`)
+      .delete(`http://localhost:4000/api/todo/${id}`)
       .then(response => {
         console.log('Todo deleted successfully');
         this.setState(prevState => ({
@@ -76,7 +76,7 @@ class Table extends Component {
     }
 
     axios
-      .put(`http://localhost:4000/todo/${id}`, { todo: editedTodoText })
+      .put(`http://localhost:4000/api/todo/${id}`, { todo: editedTodoText })
       .then(response => {
         console.log('Todo updated successfully');
         this.fetchTodos(); // Refresh the todo list after editing
@@ -111,7 +111,7 @@ class Table extends Component {
     }
 
     axios
-      .put(`http://localhost:4000/todo/${id}`, { complete: todoToToggle.complete })
+      .put(`http://localhost:4000/api/todo/${id}`, { complete: todoToToggle.complete })
       .then(response => {
         console.log('Todo completion status updated successfully');
       })

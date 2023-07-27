@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const Todo = require('../server/schema/schema');
+const Todo = require('../schema/schema');
 
-router.post('api/', async (req, res) => {
+router.post('/', async (req, res) => {
   try {
     const { todo, complete } = req.body;
     const addTodo = new Todo({
@@ -19,7 +19,7 @@ router.post('api/', async (req, res) => {
   }
 });
 
-router.delete('api/:id', async (req, res) => {
+router.delete('/:id', async (req, res) => {
   try {
     const todoId = req.params.id;
     console.log(todoId);
@@ -38,7 +38,7 @@ router.delete('api/:id', async (req, res) => {
   }
 });
 
-router.get('api/', async (req, res) => {
+router.get('/', async (req, res) => {
   try {
     const todos = await Todo.find();
     res.json(todos);
@@ -49,7 +49,7 @@ router.get('api/', async (req, res) => {
   }
 });
 
-router.put('api/:id', async (req, res) => {
+router.put('/:id', async (req, res) => {
   try {
     const todoId = req.params.id;
     const { todo, complete } = req.body;

@@ -4,7 +4,7 @@ const app = express();
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const dotenv = require('dotenv').config();
-const todoRouter = require('../routes/todo');
+const todoRouter = require('./routes/todo');
 const uri = process.env.MONGO_URL
 const cors = require('cors');
 
@@ -20,7 +20,7 @@ mongoose.connect(uri, {
 });
 
 //app routes
-app.use('/todo', todoRouter);
+app.use('/api/todo', todoRouter);
 
 
 //start server
