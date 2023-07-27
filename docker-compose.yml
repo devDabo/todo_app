@@ -23,9 +23,14 @@ services:
             - MONGO_USER=rajchand99
             - MONGO-PASSWORD=rajchand99
     client:
-        build: Dockerfile.dev
-        context: ./client
-
+        build: 
+            dockerfile: Dockerfile.dev
+            context: ./client
+        volumes:
+            - '/app/node_modules'
+            - '/client:/app'
+        command: npm run start
+        tty: true
 
 
         
