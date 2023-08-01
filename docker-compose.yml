@@ -16,6 +16,8 @@ services:
         build:
             dockerfile: Dockerfile.dev
             context: ./server
+        ports:
+            - "4000:4000"
         volumes:
             - '/app/node_modules'
             - './server:/app'
@@ -26,6 +28,8 @@ services:
         build: 
             dockerfile: Dockerfile.dev
             context: ./app/client
+        ports:
+            - "3000:3000"
         volumes:
             - '/app/node_modules'
             - './app/client:/app/client'
