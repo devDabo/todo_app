@@ -1,4 +1,4 @@
-# MERN Todo App
+# MERN Todo App with Docker Setup
 
 This is a simple MERN (MongoDB, Express, React, Node.js) todo app that allows users to manage their daily tasks efficiently. The app provides a user-friendly interface to create, edit, and delete todo items. This app also supports marking tasks as completed.
 
@@ -24,12 +24,12 @@ This is a simple MERN (MongoDB, Express, React, Node.js) todo app that allows us
 
 Before running the MERN todo app, ensure you have the following installed:
 
-- Node.js (v14 or later)
-- MongoDB
+- Docker
+- Docker Compose
 
 ## Installation
 
-To install the necessary dependencies for the app, follow these steps:
+To set up the MERN todo app locally using Docker, follow these steps:
 
 1. Clone the repository to your local machine:
 
@@ -38,56 +38,31 @@ git clone https://github.com/devDabo/todo_app.git
 cd todo_app
 ```
 
-2. Install frontend dependencies:
+2. Create a `.env` file in the root directory of the project and set the following environment variables, replacing `<YOUR_MONGODB_URI>` with your actual MongoDB URI:
 
-```bash
-cd app
-npm install
+```plaintext
+MONGO_USER=your_mongo_username
+MONGO_PASSWORD=your_mongo_password
 ```
-
-3. Install backend dependencies:
-
-```bash
-cd server
-npm install
-```
-
-### Setting up the MongoDB Database
-
-1. You'll need to have a MongoDB database for storing the todos. If you don't have one, create a free MongoDB Atlas account or set up a local MongoDB server.
-
-2. Once you have your MongoDB URI, create a `.env` file in the `server` directory.
-
-3. Open the `.env` file and add the following line, replacing `<YOUR_MONGODB_URI>` with your actual MongoDB URI:
-
 
 ## Running the App
 
-1. Start the MongoDB server on your local machine.
+1. Open a terminal and navigate to the root directory of the project.
 
-2. Run the backend server:
-
-```bash
-cd server
-node server.js
-```
-
-3. In a separate terminal, run the frontend React app:
+2. Run the following command to start the app using Docker Compose:
 
 ```bash
-cd app
-npm start
+docker-compose up
 ```
 
-Now, the MERN todo app should be up and running at `http://localhost:3000/`.
+Docker Compose will build the necessary Docker images and start the MongoDB, backend, and frontend services. The MERN todo app should be up and running at `http://localhost:3000/`.
 
 ## Testing
 
 The app includes JEST tests to ensure the correctness of some critical components and functionalities. To run the tests, use the following command:
 
 ```bash
-cd app
-npm test
+docker-compose run client npm test
 ```
 
 ## Technologies Used
@@ -96,6 +71,8 @@ npm test
 - Node.js: JavaScript runtime environment for the server-side.
 - Express: Web application framework for Node.js.
 - MongoDB: NoSQL database for storing todo items.
+- Docker: Platform for building, shipping, and running applications in containers.
+- Docker Compose: Tool for defining and running multi-container Docker applications.
 - Axios: Promise-based HTTP app for making API requests.
 - Jest: Testing framework for JavaScript code.
 
