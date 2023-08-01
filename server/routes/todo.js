@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const Todo = require('../server/schema/schema');
+const Todo = require('../schema/schema');
 
 router.post('/', async (req, res) => {
   try {

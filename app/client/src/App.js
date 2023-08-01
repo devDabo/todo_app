@@ -13,7 +13,7 @@ class App extends Component {
     const { todoText } = this.state;
 
     axios
-      .post('http://localhost:4000/todo', { todo: todoText })
+      .post('http://localhost:4000/api/todo', { todo: todoText })
       .then(response => {
         console.log(response.data);
         this.tableComponent.fetchTodos(); // Update the todos by calling fetchTodos in the Table component
