@@ -1,17 +1,17 @@
 version: '3'
 services:
-    nginx:
-        restart: always
-        image: 
-            'nginx:latest'
-        build: 
-            dockerfile: Dockerfile.dev
-            context: ./nginx
-        ports:
-            - '3050:3051'
-        depends_on:
-            - api
-            - client
+    # nginx:
+    #     restart: always
+    #     image: 
+    #         'nginx:latest'
+    #     build: 
+    #         dockerfile: Dockerfile.dev
+    #         context: ./nginx
+    #     ports:
+    #         - '3050:3051'
+    #     depends_on:
+    #         - api
+    #         - client
     api: 
         build:
             dockerfile: Dockerfile.dev
@@ -25,10 +25,10 @@ services:
     client:
         build: 
             dockerfile: Dockerfile.dev
-            context: ./client
+            context: ./app/client
         volumes:
             - '/app/node_modules'
-            - '/client:/app'
+            - './app/client:/app/client'
         command: npm run start
         tty: true
 
