@@ -10,8 +10,10 @@ const cors = require('cors');
 
 app.use(bodyParser.json());
 
-// Enable CORS
-app.use(cors());
+// Enable CORS for frontend
+app.use(cors({
+    origin: 'http://localhost:3000'
+}));
 
 //connect to mongodb
 mongoose.connect(uri, {
