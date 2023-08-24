@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState, useRef } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import axios from 'axios';
 import Form from './components/Form';
@@ -7,44 +7,39 @@ import './App.css';
 import Login from './components/Login';
 import Home from './components/Home';
 
-class App extends Component {
-  state = {
-    todoText: ''
-  };
+function App() {
+  const [todoText, setTodoText] = useState('');
+  const tableComponent = useRef(null);
 
-  onSubmitTodo = () => {
-    const { todoText } = this.state;
-
+  const onSubmitTodo = () => {
     axios
       .post('http://localhost:4000/api/todo', { todo: todoText })
       .then(response => {
         console.log(response.data);
-        this.tableComponent.fetchTodos(); // Update the todos by calling fetchTodos in the Table component
+        tableComponent.current.fetchTodos();
       })
       .catch(error => {
         console.log(error);
       });
   };
 
-  handleTodoTextChange = todoText => {
-    this.setState({ todoText });
+  const handleTodoTextChange = newText => {
+    setTodoText(newText);
   };
 
-  render() {
-    return (
-      <Router>
-        <div className="App">
-          <Switch>
-            <Route exact path="/login" component={Login} />
-            <Route exact path="/" component={Home} />
-          </Switch>
-          <Form onTodoTextChange={this.handleTodoTextChange} onSubmitTodo={this.onSubmitTodo} />
-          <button onClick={this.onSubmitTodo}>Add todo</button>
-          <Table ref={instance => (this.tableComponent = instance)} />
-        </div>
-      </Router>
-    );
-  }
+  return (
+    <Router>
+      <div className="App">
+        <Switch>
+          <Route exact path="/login" component={Login} />
+          <Route exact path="/" component={Home} />
+        </Switch>
+        <Form onTodoTextChange={handleTodoTextChange} onSubmitTodo={onSubmitTodo} />
+        <button onClick={onSubmitTodo}>Add todo</button>
+        <Table ref={tableComponent} />
+      </div>
+    </Router>
+  );
 }
 
 export default App;
