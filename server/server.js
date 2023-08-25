@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const dotenv = require('dotenv').config();
 const todoRouter = require('./routes/todo');
+const registerRouter = require('./routes/register')
 const uri = process.env.MONGO_URL
 const cors = require('cors');
 
@@ -21,6 +22,7 @@ mongoose.connect(uri, {
 
 //app routes
 app.use('/api/todo', todoRouter);
+app.use('/register', registerRouter);
 
 
 //start server

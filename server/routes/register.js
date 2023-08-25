@@ -1,20 +1,21 @@
-// routes/registerRouter.js
 const express = require('express');
 const router = express.Router();
-const User = require('../models/User');
+const bcrypt = require('bcryptjs');
+const User = require('../schema/user');
 
-// Define your register routes
 router.post('/', async (req, res) => {
   try {
     const { email, password } = req.body;
-    
-    // Validate input and create a new user
+
+    // Hash the password
+    const hashedPassword = await bcrypt.hash(password, 10); // 10 is the number of salt rounds
+
+    // Create a new user
     const newUser = new User({
       email: email,
-      password: password, // Remember to hash the password before saving it
+      password: hashedPassword,
     });
 
-    // Save the user to the database
     await newUser.save();
 
     res.status(201).json({ message: 'User registered successfully' });
