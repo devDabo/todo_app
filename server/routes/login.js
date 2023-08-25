@@ -1,7 +1,7 @@
 // routes/loginRouter.js
 const express = require('express');
 const router = express.Router();
-const User = require('../models/User');
+const User = require('../schema/user');
 
 // Define your login routes
 router.post('/', async (req, res) => {
