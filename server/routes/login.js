@@ -3,7 +3,6 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const User = require('../schema/user');
 
-// Define your login routes
 router.post('/', async (req, res) => {
   try {
     const { email, password } = req.body;
