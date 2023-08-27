@@ -1,45 +1,41 @@
-import React, { useState, useRef } from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import React, { Component } from 'react';
 import axios from 'axios';
 import Form from './components/Form';
 import Table from './components/Table';
 import './App.css';
-import Login from './components/Login';
-import Home from './components/Home';
 
-function App() {
-  const [todoText, setTodoText] = useState('');
-  const tableComponent = useRef(null);
+class App extends Component {
+  state = {
+    todoText: ''
+  };
 
-  const onSubmitTodo = () => {
+  onSubmitTodo = () => {
+    const { todoText } = this.state;
+
     axios
       .post('http://localhost:4000/api/todo', { todo: todoText })
       .then(response => {
         console.log(response.data);
-        tableComponent.current.fetchTodos();
+        this.tableComponent.fetchTodos(); // Update the todos by calling fetchTodos in the Table component
       })
       .catch(error => {
         console.log(error);
       });
   };
 
-  const handleTodoTextChange = newText => {
-    setTodoText(newText);
+  handleTodoTextChange = todoText => {
+    this.setState({ todoText });
   };
 
-  return (
-    <Router>
+  render() {
+    return (
       <div className="App">
-        <Switch>
-          <Route exact path="/login" component={Login} />
-          <Route exact path="/" component={Home} />
-        </Switch>
-        <Form onTodoTextChange={handleTodoTextChange} onSubmitTodo={onSubmitTodo} />
-        <button onClick={onSubmitTodo}>Add todo</button>
-        <Table ref={tableComponent} />
+        <Form onTodoTextChange={this.handleTodoTextChange} onSubmitTodo={this.onSubmitTodo} />
+        <button onClick={this.onSubmitTodo}>Add todo</button>
+        <Table ref={instance => (this.tableComponent = instance)} />
       </div>
-    </Router>
-  );
+    );
+  }
 }
 
 export default App;
