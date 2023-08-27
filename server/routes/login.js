@@ -1,6 +1,6 @@
-// routes/loginRouter.js
 const express = require('express');
 const router = express.Router();
+const bcrypt = require('bcryptjs');
 const User = require('../schema/user');
 
 // Define your login routes
@@ -15,8 +15,10 @@ router.post('/', async (req, res) => {
       return res.status(401).json({ error: 'Invalid email or password' });
     }
 
-    // Validate the password
-    if (user.password !== password) {
+    // Compare the provided password with the stored hashed password
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordValid) {
       return res.status(401).json({ error: 'Invalid email or password' });
     }
 
