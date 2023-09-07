@@ -12,7 +12,7 @@ services:
     #     depends_on:
     #         - api
     #         - client
-    api: 
+    api:
         build:
             dockerfile: Dockerfile.dev
             context: ./server
@@ -24,6 +24,7 @@ services:
         environment:
             - MONGO_USER=rajchand99
             - MONGO-PASSWORD=rajchand99
+        
     client:
         build: 
             dockerfile: Dockerfile.dev
@@ -34,7 +35,7 @@ services:
             - '/app/node_modules'
             - './app/client:/app/client'
         command: npm run start
-        tty: true
+        
 
 
         

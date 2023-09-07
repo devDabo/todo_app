@@ -11,6 +11,7 @@ const protectedRouter = require('./routes/protectedRoutes');
 const uri = process.env.MONGO_URL;
 const cors = require('cors');
 const { verifyToken } = require('./middleware/authMiddleware');
+//add jwt middleware, add express-unless
 
 app.use(bodyParser.json());
 
