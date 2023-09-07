@@ -1,30 +1,39 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const User = require('../schema/user');
 
 router.post('/', async (req, res) => {
   try {
     const { email, password } = req.body;
 
-        // Check if the user with the given email already exists
-        const existingUser = await User.findOne({ email: email });
-        if (existingUser) {
-          return res.status(400).json({ error: 'Email already registered' });
-        }
+    // Check if the user already exists
+    const existingUser = await User.findOne({ email });
+
+    if (existingUser) {
+      return res.status(400).json({ message: 'User already exists' });
+    }
 
     // Hash the password
-    const hashedPassword = await bcrypt.hash(password, 10); // 10 is the number of salt rounds
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     // Create a new user
     const newUser = new User({
-      email: email,
+      email,
       password: hashedPassword,
     });
 
     await newUser.save();
 
-    res.status(201).json({ message: 'User registered successfully' });
+    // Create and sign a JWT token
+    const token = jwt.sign(
+      { userId: newUser._id, email: newUser.email },
+      process.env.JWT_SECRET,
+      { expiresIn: '1h' }
+    );
+
+    res.status(201).json({ message: 'User registered successfully', token });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'An error occurred' });
