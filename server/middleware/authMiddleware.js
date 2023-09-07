@@ -15,7 +15,10 @@ const verifyToken = (req, res, next) => {
     if (err) {
       return res.status(403).json({ message: 'Failed to authenticate token' });
     }
-    req.user = decoded; // Store user information in the request object
+    
+    // Attach the decoded user data to the request object for later use
+    req.user = decoded;
+
     next();
   });
 };

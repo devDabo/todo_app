@@ -5,10 +5,12 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const dotenv = require('dotenv').config();
 const todoRouter = require('./routes/todo');
-const registerRouter = require('./routes/register')
-const loginRouter = require('./routes/login')
-const uri = process.env.MONGO_URL
+const registerRouter = require('./routes/register');
+const loginRouter = require('./routes/login');
+const protectedRouter = require('./routes/protectedRoutes');
+const uri = process.env.MONGO_URL;
 const cors = require('cors');
+const { verifyToken } = require('./middleware/authMiddleware');
 
 app.use(bodyParser.json());
 
@@ -17,17 +19,19 @@ app.use(cors({
     origin: 'http://localhost:3000'
 }));
 
-//connect to mongodb
+// Connect to MongoDB
 mongoose.connect(uri, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 });
 
-//app routes
+// App routes
 app.use('/api/todo', todoRouter);
 app.use('/register', registerRouter);
 app.use('/login', loginRouter);
 
+// Protected route with middleware
+app.use('/protected', verifyToken, protectedRouter);
 
-//start server
-app.listen(port, () => console.log(`App listening on port ${port}`))
+// Start server
+app.listen(port, () => console.log(`App listening on port ${port}`));
