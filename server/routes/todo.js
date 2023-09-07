@@ -88,4 +88,9 @@ router.put('/:id', verifyToken, async (req, res) => {
   }
 });
 
+// Handle 403 Forbidden error
+router.use((req, res) => {
+  res.status(403).json({ error: 'Forbidden' });
+});
+
 module.exports = router;
