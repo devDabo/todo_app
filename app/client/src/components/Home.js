@@ -3,7 +3,7 @@ import axios from 'axios';
 
 class Home extends Component {
   state = {
-    todos: []
+    todos: [],
   };
 
   componentDidMount() {
@@ -11,12 +11,20 @@ class Home extends Component {
   }
 
   fetchTodos = () => {
+    // Get the token from local storage
+    const token = localStorage.getItem('token');
+
+    // Include the token in the request headers
     axios
-      .get('http://localhost:4000/api/todo')
-      .then(response => {
+      .get('http://localhost:4000/api/todo', {
+        headers: {
+          'x-auth-token': token,
+        },
+      })
+      .then((response) => {
         this.setState({ todos: response.data });
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(error);
       });
   };
@@ -28,7 +36,7 @@ class Home extends Component {
       <div>
         <h2>Your Todo List</h2>
         <ul>
-          {todos.map(todo => (
+          {todos.map((todo) => (
             <li key={todo._id}>{todo.todo}</li>
           ))}
         </ul>

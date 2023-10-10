@@ -1,34 +1,45 @@
 import React, { Component } from 'react';
-import axios from 'axios';
+import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
+import { withCookies, Cookies } from 'react-cookie';
+import ProtectedRoute from '../src/'; // Import your ProtectedRoute component
+import axios from 'axios'; 
 import Form from './components/Form';
 import Table from './components/Table';
 import Login from './components/Login';
 import Register from './components/Register';
 import Home from './components/Home';
-import './App.css';
 
 class App extends Component {
-  state = {
-    authenticated: false,
-    todoText: ''
-  };
+  constructor(props) {
+    super(props);
+    this.cookies = new Cookies();
+    this.state = {
+      authenticated: false,
+      todoText: '',
+    };
+  }
 
   componentDidMount() {
-    // Check user authentication status here
-    // You might use a cookie or token to determine if the user is authenticated
-    // For now, let's assume user is authenticated
-    this.setState({ authenticated: true });
+    // Check user authentication status using cookies
+    const authToken = this.cookies.get('authToken');
+    if (authToken) {
+      this.setState({ authenticated: true });
+    }
   }
 
   handleLogin = () => {
-    // Handle user login
-    // Update authenticated status if login is successful
+    // Handle user login, make API calls, etc.
+
+    // Assuming login was successful:
+    this.cookies.set('authToken', 'yourAuthTokenHere', { path: '/' });
     this.setState({ authenticated: true });
   };
 
   handleLogout = () => {
-    // Handle user logout
-    // Update authenticated status if logout is successful
+    // Handle user logout, clear any session data, make API calls, etc.
+
+    // Remove the authentication cookie:
+    this.cookies.remove('authToken', { path: '/' });
     this.setState({ authenticated: false });
   };
 
@@ -56,7 +67,24 @@ class App extends Component {
     return (
       <div className="App">
         <h1>Todo App</h1>
-        {authenticated ? (
+        <Router>
+          <Switch>
+            <Route
+              path="/login"
+              render={props => (
+                <Login {...props} onLogin={this.handleLogin} />
+              )}
+            />
+            <Route path="/register" component={Register} />
+            <ProtectedRoute
+              path="/protected"
+              component={Home}
+              authenticated={authenticated}
+            />
+            <Redirect to="/login" />
+          </Switch>
+        </Router>
+        {authenticated && (
           <>
             <Form
               onTodoTextChange={this.handleTodoTextChange}
@@ -66,15 +94,10 @@ class App extends Component {
             <Table ref={instance => (this.tableComponent = instance)} />
             <button onClick={this.handleLogout}>Logout</button>
           </>
-        ) : (
-          <>
-            <Login onLogin={this.handleLogin} />
-            <Register />
-          </>
         )}
       </div>
     );
   }
 }
 
-export default App;
+export default withCookies(App);

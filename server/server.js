@@ -1,38 +1,37 @@
 const express = require('express');
-const port = 4000;
-const app = express();
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const dotenv = require('dotenv').config();
+const cors = require('cors');
+
+// Import routers and middleware
 const todoRouter = require('./routes/todo');
 const registerRouter = require('./routes/register');
 const loginRouter = require('./routes/login');
-const protectedRouter = require('./routes/protectedRoutes');
-const uri = process.env.MONGO_URL;
-const cors = require('cors');
-const { verifyToken } = require('./middleware/authMiddleware');
-//add jwt middleware, add express-unless
+const dashboardRouter = require('./routes/dashboard');
+const protectedRouter = require('./routes/protectedRoute');
+const authenticateToken = require('./middleware/authenticateToken');
+
+const app = express();
+const port = 4000;
 
 app.use(bodyParser.json());
 
-// Enable CORS for frontend
 app.use(cors({
-    origin: 'http://localhost:3000'
+    origin: 'http://localhost:3000' // update this to your frontend application's URL
 }));
 
-// Connect to MongoDB
-mongoose.connect(uri, {
+mongoose.connect(process.env.MONGO_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true
-});
+})
+.then(() => console.log('Connected to MongoDB'))
+.catch((error) => console.error('Could not connect to MongoDB:', error));
 
-// App routes
 app.use('/api/todo', todoRouter);
 app.use('/register', registerRouter);
 app.use('/login', loginRouter);
+app.use('/dashboard', authenticateToken, dashboardRouter);
+app.use('/protected', authenticateToken, protectedRouter);
 
-// Protected route with middleware
-app.use('/protected', verifyToken, protectedRouter);
-
-// Start server
 app.listen(port, () => console.log(`App listening on port ${port}`));

@@ -1,5 +1,4 @@
-import React, { useState, Component } from 'react';
-//import { Link } from 'react-router-dom';
+import React, { Component } from 'react';
 import axios from 'axios';
 
 class Login extends Component {
@@ -23,6 +22,15 @@ class Login extends Component {
       .then(response => {
         // Handle successful login
         console.log(response.data);
+
+        // Assuming the server sends back a token
+        const token = response.data.token;
+
+        // Store the token in local storage (or a secure location)
+        localStorage.setItem('token', token);
+
+        // Redirect to a protected route (e.g., user dashboard)
+        this.props.history.push('/home');
       })
       .catch(error => {
         // Handle login error
@@ -61,9 +69,6 @@ class Login extends Component {
           </div>
           <button type="submit">Login</button>
         </form>
-        <p>
-          {/* Don't have an account? <Link to="/register">Register here</Link> */}
-        </p>
       </div>
     );
   }
