@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import { withCookies, Cookies } from 'react-cookie';
-import ProtectedRoute from '../src/'; // Import your ProtectedRoute component
+import ProtectedRoute from '../src/components/ProtectedRoute';
 import axios from 'axios'; 
 import Form from './components/Form';
 import Table from './components/Table';
@@ -20,7 +20,6 @@ class App extends Component {
   }
 
   componentDidMount() {
-    // Check user authentication status using cookies
     const authToken = this.cookies.get('authToken');
     if (authToken) {
       this.setState({ authenticated: true });
@@ -28,29 +27,22 @@ class App extends Component {
   }
 
   handleLogin = () => {
-    // Handle user login, make API calls, etc.
-
-    // Assuming login was successful:
     this.cookies.set('authToken', 'yourAuthTokenHere', { path: '/' });
     this.setState({ authenticated: true });
   };
 
   handleLogout = () => {
-    // Handle user logout, clear any session data, make API calls, etc.
-
-    // Remove the authentication cookie:
     this.cookies.remove('authToken', { path: '/' });
     this.setState({ authenticated: false });
   };
 
   onSubmitTodo = () => {
     const { todoText } = this.state;
-
     axios
       .post('http://localhost:4000/api/todo', { todo: todoText })
       .then(response => {
         console.log(response.data);
-        this.tableComponent.fetchTodos(); // Update the todos by calling fetchTodos in the Table component
+        this.tableComponent.fetchTodos();
       })
       .catch(error => {
         console.log(error);
@@ -63,7 +55,6 @@ class App extends Component {
 
   render() {
     const { authenticated } = this.state;
-
     return (
       <div className="App">
         <h1>Todo App</h1>
@@ -77,7 +68,7 @@ class App extends Component {
             />
             <Route path="/register" component={Register} />
             <ProtectedRoute
-              path="/protected"
+              path="/home"
               component={Home}
               authenticated={authenticated}
             />

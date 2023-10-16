@@ -2,47 +2,46 @@ import React, { Component } from 'react';
 import axios from 'axios';
 
 class Home extends Component {
-  state = {
-    todos: [],
-  };
+    state = {
+        todos: [],
+        error: null,
+    };
 
-  componentDidMount() {
-    this.fetchTodos();
-  }
+    componentDidMount() {
+        this.fetchTodos();
+    }
 
-  fetchTodos = () => {
-    // Get the token from local storage
-    const token = localStorage.getItem('token');
+    fetchTodos = () => {
+        const token = localStorage.getItem('token');
+        axios.get('http://localhost:4000/api/todo', {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+        })
+        .then((response) => {
+            this.setState({ todos: response.data });
+        })
+        .catch((error) => {
+            console.error(error);
+            this.setState({ error: 'An error occurred while fetching todos' });
+        });
+    };
 
-    // Include the token in the request headers
-    axios
-      .get('http://localhost:4000/api/todo', {
-        headers: {
-          'x-auth-token': token,
-        },
-      })
-      .then((response) => {
-        this.setState({ todos: response.data });
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-
-  render() {
-    const { todos } = this.state;
-
-    return (
-      <div>
-        <h2>Your Todo List</h2>
-        <ul>
-          {todos.map((todo) => (
-            <li key={todo._id}>{todo.todo}</li>
-          ))}
-        </ul>
-      </div>
-    );
-  }
+    render() {
+        const { todos, error } = this.state;
+        return (
+            <div>
+                <h2>Your Todos</h2>
+                {error ? <p>{error}</p> : (
+                    <ul>
+                        {todos.map((todo) => (
+                            <li key={todo._id}>{todo.text}</li>  // Assuming 'text' property contains todo text
+                        ))}
+                    </ul>
+                )}
+            </div>
+        );
+    }
 }
 
 export default Home;
