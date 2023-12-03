@@ -10,14 +10,12 @@ router.post('/', async (req, res) => {
 
     // Check if the user exists
     const user = await User.findOne({ email });
-
     if (!user) {
       return res.status(401).json({ message: 'Invalid email or password' });
     }
 
     // Compare the provided password with the hashed password
     const isPasswordValid = await bcrypt.compare(password, user.password);
-
     if (!isPasswordValid) {
       return res.status(401).json({ message: 'Invalid email or password' });
     }
@@ -35,5 +33,7 @@ router.post('/', async (req, res) => {
     res.status(500).json({ error: 'An error occurred' });
   }
 });
+
+
 
 module.exports = router;
