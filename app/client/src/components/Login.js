@@ -1,5 +1,4 @@
-import React, { useState, Component } from 'react';
-//import { Link } from 'react-router-dom';
+import React, { Component } from 'react';
 import axios from 'axios';
 
 class Login extends Component {
@@ -21,13 +20,16 @@ class Login extends Component {
 
     axios.post('http://localhost:4000/login', { email, password })
       .then(response => {
-        // Handle successful login
-        console.log(response.data);
+        // Store the JWT token in local storage
+        localStorage.setItem('token', response.data.token);
+
+        console.log('Login successful:', response.data);
       })
       .catch(error => {
-        // Handle login error
-        console.error(error);
-        this.setState({ error: 'Invalid email or password' });
+        const errorMessage = error.response && error.response.data.message 
+                           ? error.response.data.message 
+                           : 'Login failed';
+        this.setState({ error: errorMessage });
       });
   };
 
@@ -61,9 +63,7 @@ class Login extends Component {
           </div>
           <button type="submit">Login</button>
         </form>
-        <p>
-          {/* Don't have an account? <Link to="/register">Register here</Link> */}
-        </p>
+        {/* <p>Don't have an account? <Link to="/register">Register here</Link> </p> */}
       </div>
     );
   }

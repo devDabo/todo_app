@@ -14,21 +14,14 @@ class App extends Component {
   };
 
   componentDidMount() {
-    // Check user authentication status here
-    // You might use a cookie or token to determine if the user is authenticated
-    // For now, let's assume user is authenticated
     this.setState({ authenticated: true });
   }
 
   handleLogin = () => {
-    // Handle user login
-    // Update authenticated status if login is successful
     this.setState({ authenticated: true });
   };
 
   handleLogout = () => {
-    // Handle user logout
-    // Update authenticated status if logout is successful
     this.setState({ authenticated: false });
   };
 
