@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import { withRouter } from 'react-router-dom'; // Import withRouter
 
 class Login extends Component {
   state = {
@@ -17,13 +18,14 @@ class Login extends Component {
     event.preventDefault();
 
     const { email, password } = this.state;
+    const { history } = this.props; // Access history from props
 
     axios.post('http://localhost:4000/login', { email, password })
       .then(response => {
-        // Store the JWT token in local storage
         localStorage.setItem('token', response.data.token);
-
         console.log('Login successful:', response.data);
+
+        history.push('/home'); // Redirect to home page on successful login
       })
       .catch(error => {
         const errorMessage = error.response && error.response.data.message 
@@ -63,10 +65,10 @@ class Login extends Component {
           </div>
           <button type="submit">Login</button>
         </form>
-        {/* <p>Don't have an account? <Link to="/register">Register here</Link> </p> */}
+        <p>Don't have an account? <Link to="/register">Register here</Link> </p>
       </div>
     );
   }
 }
 
-export default Login;
+export default withRouter(Login); // Wrap the component with withRouter

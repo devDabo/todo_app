@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Form from './components/Form';
 import Table from './components/Table';
 import Login from './components/Login';
@@ -47,25 +48,36 @@ class App extends Component {
     const { authenticated } = this.state;
 
     return (
-      <div className="App">
-        <h1>Todo App</h1>
-        {authenticated ? (
-          <>
-            <Form
-              onTodoTextChange={this.handleTodoTextChange}
-              onSubmitTodo={this.onSubmitTodo}
-            />
-            <button onClick={this.onSubmitTodo}>Add todo</button>
-            <Table ref={instance => (this.tableComponent = instance)} />
+      <BrowserRouter>
+        <div className="App">
+          <h1>Todo App</h1>
+          {authenticated && (
             <button onClick={this.handleLogout}>Logout</button>
-          </>
-        ) : (
-          <>
-            <Login onLogin={this.handleLogin} />
-            <Register />
-          </>
-        )}
-      </div>
+          )}
+          <Routes>
+            <Route path="/login" element={<Login onLogin={this.handleLogin} />} />
+            <Route path="/register" element={<Register />} />
+            <Route 
+              path="/home"
+              element={
+                <>
+                  <Form
+                    onTodoTextChange={this.handleTodoTextChange}
+                    onSubmitTodo={this.onSubmitTodo}
+                  />
+                  <button onClick={this.onSubmitTodo}>Add todo</button>
+                  <Table ref={instance => (this.tableComponent = instance)} />
+                </>
+              }
+            />
+            {/* Redirect to login page as default if not authenticated */}
+            <Route
+              path="*"
+              element={authenticated ? <Home /> : <Login onLogin={this.handleLogin} />}
+            />
+          </Routes>
+        </div>
+      </BrowserRouter>
     );
   }
 }
