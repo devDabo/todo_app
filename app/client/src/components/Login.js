@@ -1,72 +1,66 @@
-import React, { useState, Component } from 'react';
-//import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate, Link } from 'react-router-dom';
 
-class Login extends Component {
-  state = {
-    email: '',
-    password: '',
-    error: '',
-  };
+function Login() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
 
-  handleInputChange = event => {
+  const handleInputChange = (event) => {
     const { name, value } = event.target;
-    this.setState({ [name]: value });
+    if (name === 'email') setEmail(value);
+    else if (name === 'password') setPassword(value);
   };
 
-  handleSubmit = event => {
+  const handleSubmit = (event) => {
     event.preventDefault();
-
-    const { email, password } = this.state;
 
     axios.post('http://localhost:4000/login', { email, password })
       .then(response => {
-        // Handle successful login
-        console.log(response.data);
+        localStorage.setItem('token', response.data.token);
+        console.log('Login successful:', response.data);
+        navigate('/home'); // Redirect to home page on successful login
       })
       .catch(error => {
-        // Handle login error
-        console.error(error);
-        this.setState({ error: 'Invalid email or password' });
+        const errorMessage = error.response && error.response.data.message
+                           ? error.response.data.message
+                           : 'Login failed';
+        setError(errorMessage);
       });
   };
 
-  render() {
-    const { email, password, error } = this.state;
-
-    return (
-      <div className="login-container">
-        <h2>Login</h2>
-        {error && <p className="error-message">{error}</p>}
-        <form onSubmit={this.handleSubmit}>
-          <div className="form-group">
-            <label>Email:</label>
-            <input
-              type="email"
-              name="email"
-              value={email}
-              onChange={this.handleInputChange}
-              required
-            />
-          </div>
-          <div className="form-group">
-            <label>Password:</label>
-            <input
-              type="password"
-              name="password"
-              value={password}
-              onChange={this.handleInputChange}
-              required
-            />
-          </div>
-          <button type="submit">Login</button>
-        </form>
-        <p>
-          {/* Don't have an account? <Link to="/register">Register here</Link> */}
-        </p>
-      </div>
-    );
-  }
+  return (
+    <div className="login-container">
+      <h2>Login</h2>
+      {error && <p className="error-message">{error}</p>}
+      <form onSubmit={handleSubmit}>
+        <div className="form-group">
+          <label>Email:</label>
+          <input
+            type="email"
+            name="email"
+            value={email}
+            onChange={handleInputChange}
+            required
+          />
+        </div>
+        <div className="form-group">
+          <label>Password:</label>
+          <input
+            type="password"
+            name="password"
+            value={password}
+            onChange={handleInputChange}
+            required
+          />
+        </div>
+        <button type="submit">Login</button>
+      </form>
+      <p>Don't have an account? <Link to="/register">Register here</Link></p>
+    </div>
+  );
 }
 
 export default Login;

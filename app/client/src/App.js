@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Form from './components/Form';
 import Table from './components/Table';
 import Login from './components/Login';
@@ -14,21 +15,18 @@ class App extends Component {
   };
 
   componentDidMount() {
-    // Check user authentication status here
-    // You might use a cookie or token to determine if the user is authenticated
-    // For now, let's assume user is authenticated
-    this.setState({ authenticated: true });
+    // Check for a token in local storage
+    const token = localStorage.getItem('token');
+  
+    // Set the authenticated state based on whether the token exists
+    this.setState({ authenticated: !!token });
   }
 
   handleLogin = () => {
-    // Handle user login
-    // Update authenticated status if login is successful
     this.setState({ authenticated: true });
   };
 
   handleLogout = () => {
-    // Handle user logout
-    // Update authenticated status if logout is successful
     this.setState({ authenticated: false });
   };
 
@@ -39,7 +37,7 @@ class App extends Component {
       .post('http://localhost:4000/api/todo', { todo: todoText })
       .then(response => {
         console.log(response.data);
-        this.tableComponent.fetchTodos(); // Update the todos by calling fetchTodos in the Table component
+        this.tableComponent.fetchTodos();
       })
       .catch(error => {
         console.log(error);
@@ -54,25 +52,27 @@ class App extends Component {
     const { authenticated } = this.state;
 
     return (
-      <div className="App">
-        <h1>Todo App</h1>
-        {authenticated ? (
-          <>
-            <Form
-              onTodoTextChange={this.handleTodoTextChange}
-              onSubmitTodo={this.onSubmitTodo}
-            />
-            <button onClick={this.onSubmitTodo}>Add todo</button>
-            <Table ref={instance => (this.tableComponent = instance)} />
+      <BrowserRouter>
+        <div className="App">
+          <h1>Todo App</h1>
+          {authenticated && (
             <button onClick={this.handleLogout}>Logout</button>
-          </>
-        ) : (
-          <>
-            <Login onLogin={this.handleLogin} />
-            <Register />
-          </>
-        )}
-      </div>
+          )}
+          <Routes>
+            <Route path="/login" element={<Login onLogin={this.handleLogin} />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/home" element={authenticated ? <Home /> : <Navigate to="/login" />} />
+            <Route path="/todos" element={
+              <>
+                <Form onTodoTextChange={this.handleTodoTextChange} onSubmitTodo={this.onSubmitTodo} />
+                <button onClick={this.onSubmitTodo}>Add todo</button>
+                <Table ref={instance => (this.tableComponent = instance)} />
+              </>
+            } />
+            <Route path="*" element={<Navigate to={authenticated ? "/home" : "/login"} />} />
+          </Routes>
+        </div>
+      </BrowserRouter>
     );
   }
 }

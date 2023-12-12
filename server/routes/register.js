@@ -26,14 +26,7 @@ router.post('/', async (req, res) => {
 
     await newUser.save();
 
-    // Create and sign a JWT token
-    const token = jwt.sign(
-      { userId: newUser._id, email: newUser.email },
-      process.env.JWT_SECRET,
-      { expiresIn: '1h' }
-    );
-
-    res.status(201).json({ message: 'User registered successfully', token });
+    res.status(201).json({ message: 'User registered successfully'});
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'An error occurred' });
