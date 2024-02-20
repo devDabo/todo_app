@@ -1,0 +1,12 @@
+{
+    "local": {
+        "PORT": 3000,
+        "DATABASE_URL": "mongodb://localhost:27017/todoApp",
+        "JWT_SECRET": " "
+    },
+    "live": {
+        "PORT": 80,
+        "DATABASE_URL": "mongodb://prod-db-url:27017/todoApp",
+        "JWT_SECRET": " "
+    }
+}

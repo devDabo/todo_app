@@ -21,7 +21,7 @@ function Login() {
       .then(response => {
         //localStorage.setItem('token', response.data.token);
         console.log('Login successful:', response.data);
-        //navigate('/home'); // Redirect to home page on successful login
+        navigate('/home'); // Redirect to home page on successful login
       })
       .catch(error => {
         const errorMessage = error.response && error.response.data.message

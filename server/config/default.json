@@ -1,0 +1,20 @@
+{
+    "server": {
+        "port": 3000
+    },
+    "database": {
+        "uri": "mongodb://localhost:27017/todoApp"
+    },
+    "auth": {
+        "secret": "your_secret_here",
+        "tokenExpiration": "1h",
+        "cookie": {
+            "expiration": 3600000
+        }
+    },
+    "cookies": {
+        "secure": false,
+        "httpOnly": true,
+        "sameSite": "lax"
+    }
+}
