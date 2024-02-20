@@ -4,6 +4,7 @@ const app = express();
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const dotenv = require('dotenv').config();
+const cookieParser = require('cookie-parser');
 const todoRouter = require('./routes/todo');
 const registerRouter = require('./routes/register')
 const loginRouter = require('./routes/login')
@@ -11,6 +12,8 @@ const uri = process.env.MONGO_URL
 const cors = require('cors');
 
 app.use(bodyParser.json());
+
+app.use(cookieParser("wL2daqY4vK3fAYf3LLpaxgtqT9EAXYZ"));
 
 // Enable CORS for frontend
 app.use(cors({

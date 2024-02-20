@@ -19,9 +19,9 @@ function Login() {
 
     axios.post('http://localhost:4000/login', { email, password })
       .then(response => {
-        localStorage.setItem('token', response.data.token);
+        //localStorage.setItem('token', response.data.token);
         console.log('Login successful:', response.data);
-        navigate('/home'); // Redirect to home page on successful login
+        //navigate('/home'); // Redirect to home page on successful login
       })
       .catch(error => {
         const errorMessage = error.response && error.response.data.message

@@ -16,7 +16,7 @@ class App extends Component {
 
   componentDidMount() {
     // Check for a token in local storage
-    const token = localStorage.getItem('token');
+    const token = true;
   
     // Set the authenticated state based on whether the token exists
     this.setState({ authenticated: !!token });

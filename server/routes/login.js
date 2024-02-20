@@ -27,7 +27,16 @@ router.post('/', async (req, res) => {
       { expiresIn: '1h' }
     );
 
-    res.status(200).json({ message: 'Login successful', token });
+    res.cookie("accessToken", token,{
+      "httpOnly": true,
+      "secure": false,
+      "maxAge": 33840000, 
+      "signed": true
+    })
+
+    res.status(200).json({ message: 'Login successful'});
+    //todo: create home redirect
+    //res.redirect(302, "/todos")
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'An error occurred' });

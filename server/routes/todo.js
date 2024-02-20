@@ -47,11 +47,11 @@ router.post('/', async (req, res) => {
 router.delete('/:id', async (req, res) => {
   try {
     const todoId = req.params.id;
-    const userId = getCurrentUserId(req);
+    // const userId = getCurrentUserId(req);
 
-    if (!userId) {
-      return res.status(401).json({ error: 'Unauthorized' });
-    }
+    // if (!userId) {
+    //   return res.status(401).json({ error: 'Unauthorized' });
+    // }
 
     const deletedTodo = await Todo.findOneAndDelete({ _id: todoId, user: userId });
 
@@ -68,11 +68,11 @@ router.delete('/:id', async (req, res) => {
 
 router.get('/', async (req, res) => {
   try {
-    const userId = getCurrentUserId(req);
+    // const userId = getCurrentUserId(req);
 
-    if (!userId) {
-      return res.status(401).json({ error: 'Unauthorized' });
-    }
+    // if (!userId) {
+    //   return res.status(401).json({ error: 'Unauthorized' });
+    // }
 
     const todos = await Todo.find({ user: userId });
 
@@ -87,11 +87,11 @@ router.put('/:id', async (req, res) => {
   try {
     const todoId = req.params.id;
     const { todo, complete } = req.body;
-    const userId = getCurrentUserId(req);
+    // const userId = getCurrentUserId(req);
 
-    if (!userId) {
-      return res.status(401).json({ error: 'Unauthorized' });
-    }
+    // if (!userId) {
+    //   return res.status(401).json({ error: 'Unauthorized' });
+    // }
 
     const updatedFields = {
       todo: todo,
