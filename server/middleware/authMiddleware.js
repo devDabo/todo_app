@@ -3,7 +3,8 @@ require('dotenv').config(); // Load environment variables from a .env file
 const User = require('../schema/user');
 
 const verifyToken = (req, res, next) => {
-  const token = req.signedCookies.accessToken; // Using signedCookies to get the accessToken
+  console.log(req)
+  const token = req.cookies.accessToken;
   
   if (!token) {
     return res.status(401).json({ message: 'No token provided' });

@@ -12,7 +12,7 @@ class Home extends Component {
 
   fetchTodos = () => {
     axios
-      .get('http://localhost:4000/api/todo')
+      .get('http://localhost:4000/api/todo', { withCredentials: true })
       .then(response => {
         this.setState({ todos: response.data });
       })

@@ -8,6 +8,8 @@ import Register from './components/Register';
 import Home from './components/Home';
 import './App.css';
 
+axios.defaults.withCredentials = true; // Ensure credentials are sent with every request
+
 class App extends Component {
   state = {
     authenticated: false,
@@ -15,19 +17,45 @@ class App extends Component {
   };
 
   componentDidMount() {
-    // Check for a token in local storage
-    const token = true;
-  
-    // Set the authenticated state based on whether the token exists
-    this.setState({ authenticated: !!token });
+    this.checkAuthenticationStatus();
   }
 
-  handleLogin = () => {
-    this.setState({ authenticated: true });
+  checkAuthenticationStatus = () => {
+    axios.get('http://localhost:4000/api/auth/status')
+      .then(response => {
+        if (response.data.authenticated) {
+          this.setState({ authenticated: true });
+        } else {
+          this.setState({ authenticated: false });
+        }
+      })
+      .catch(error => {
+        console.error("Authentication check failed", error);
+        this.setState({ authenticated: false });
+      });
+  };
+
+  handleLogin = (credentials) => {
+    // Send credentials to the server for login
+    axios.post('http://localhost:4000/api/auth/login', credentials)
+      .then(response => {
+        // After login, check authentication status again
+        this.checkAuthenticationStatus();
+      })
+      .catch(error => {
+        console.log(error);
+      });
   };
 
   handleLogout = () => {
-    this.setState({ authenticated: false });
+    axios.post('http://localhost:4000/api/auth/logout')
+      .then(response => {
+        // After logout, update authentication status
+        this.checkAuthenticationStatus();
+      })
+      .catch(error => {
+        console.log(error);
+      });
   };
 
   onSubmitTodo = () => {
@@ -55,8 +83,10 @@ class App extends Component {
       <BrowserRouter>
         <div className="App">
           <h1>Todo App</h1>
-          {authenticated && (
+          {authenticated ? (
             <button onClick={this.handleLogout}>Logout</button>
+          ) : (
+            <Navigate to="/login" replace />
           )}
           <Routes>
             <Route path="/login" element={<Login onLogin={this.handleLogin} />} />
