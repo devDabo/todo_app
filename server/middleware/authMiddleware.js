@@ -3,7 +3,7 @@ require('dotenv').config(); // Load environment variables from a .env file
 const User = require('../schema/user');
 
 const verifyToken = (req, res, next) => {
-  console.log(req)
+
   const token = req.cookies.accessToken;
   
   if (!token) {
@@ -12,6 +12,7 @@ const verifyToken = (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    console.log(decoded.userId);
     // Fetch the user from the database using the decoded userId
     User.findById(decoded.userId).then(user => {
       if (!user) {

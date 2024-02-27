@@ -24,16 +24,11 @@ const getCurrentUserId = (req) => {
 router.post('/', async (req, res) => {
   try {
     const { todo, complete } = req.body;
-    const userId = getCurrentUserId(req);
-
-    if (!userId) {
-      return res.status(401).json({ error: 'Unauthorized' });
-    }
 
     const addTodo = new Todo({
       todo: todo,
       complete: complete || false,
-      user: userId,
+      user: req.userId,
     });
 
     const doc = await addTodo.save();
