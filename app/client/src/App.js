@@ -8,7 +8,7 @@ import Register from './components/Register';
 import Home from './components/Home';
 import './App.css';
 
-axios.defaults.withCredentials = true; // Ensure credentials are sent with every request
+axios.defaults.withCredentials = true;
 
 class App extends Component {
   state = {
@@ -37,7 +37,7 @@ class App extends Component {
 
   handleLogin = (credentials) => {
     // Send credentials to the server for login
-    axios.post('http://localhost:4000/api/auth/login', credentials)
+    axios.post('http://localhost:4000/login', credentials)
       .then(response => {
         // After login, check authentication status again
         this.checkAuthenticationStatus();

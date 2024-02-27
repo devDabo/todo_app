@@ -1,21 +1,27 @@
 import React, { useState } from 'react';
 
-const Form = ({ onTodoTextChange }) => {
+const Form = ({ onFormSubmit }) => {
   const [todoText, setTodoText] = useState('');
 
+  // Simplified handleChange function
   const handleChange = e => {
-    const newText = e.target.value;
-    setTodoText(newText);
-    onTodoTextChange(newText); // Call the onTodoTextChange prop with the new text
+    setTodoText(e.target.value);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onFormSubmit(todoText);
+    setTodoText('');
   };
 
   return (
     <>
-      <form>
+      <form onSubmit={handleSubmit}>
         <label>
           Todo: {' '}
           <input type="text" value={todoText} onChange={handleChange} />
         </label>
+        <button type="submit">Add Todo</button>
       </form>
     </>
   );
