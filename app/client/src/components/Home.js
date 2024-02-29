@@ -2,21 +2,47 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import Form from './Form';
 
+axios.defaults.withCredentials = true;
+axios.defaults.baseURL = 'http://localhost:4000';
+
 class Home extends Component {
   state = {
     todos: [],
     completedTodos: [],
     editingTodoId: null,
     editedTodoText: '',
+    isAuthenticated: false,
   };
 
   componentDidMount() {
-    this.fetchTodos();
+    this.checkAuthentication();
+  }
+
+  checkAuthentication = () => {
+    axios.get('/api/auth/verify')
+      .then(response => {
+        if (response.status === 200 && response.data.isAuthenticated) {
+          this.setState({ isAuthenticated: true });
+          this.fetchTodos();
+        } else {
+          this.setState({ isAuthenticated: false });
+          // Redirect to login or show a message
+        }
+      })
+      .catch(error => {
+        console.error('Authentication verification failed', error);
+        this.setState({ isAuthenticated: false });
+        // Redirect to login or show a message
+      });
   }
 
   fetchTodos = () => {
-    axios
-      .get('http://localhost:4000/api/todo', { withCredentials: true })
+    if (!this.state.isAuthenticated) {
+      console.log('Not authenticated');
+      return;
+    }
+
+    axios.get('/api/todo')
       .then(response => {
         if (response.data && Array.isArray(response.data)) {
           const completedTodos = response.data.filter(todo => todo.complete);
@@ -28,118 +54,84 @@ class Home extends Component {
         }
       })
       .catch(error => {
-        console.log(error);
+        console.error('Error fetching todos', error);
       });
-  };
+  }
 
-
-addTodo = (todoText) => {
-  axios
-    .post('http://localhost:4000/api/todo', { todo: todoText })
-    .then(response => {
-      console.log('Todo added successfully');
-      this.fetchTodos(); // Refresh the todo list
-    })
-    .catch(error => {
-      console.log(error);
-    });
-};
-
-  deleteTodo = (id) => {
-    if (!id) {
-      console.log('Invalid todo ID');
-      return;
-    }
-
-    axios
-      .delete(`http://localhost:4000/api/todo/${id}`)
+  addTodo = (todoText) => {
+    axios.post('/api/todo', { todo: todoText })
       .then(response => {
-        console.log('Todo deleted successfully');
-        this.setState(prevState => ({
-          todos: prevState.todos.filter(todo => todo._id !== id),
-          completedTodos: prevState.completedTodos.filter(todo => todo._id !== id),
-        }));
+        console.log('Todo added successfully');
+        this.fetchTodos(); // Refresh the todo list after adding a new todo
       })
       .catch(error => {
-        console.log(error);
+        console.error('Error adding todo', error);
       });
-  };
+  }
+
+  deleteTodo = (id) => {
+    axios.delete(`/api/todo/${id}`)
+      .then(response => {
+        console.log('Todo deleted successfully');
+        this.fetchTodos(); // Refresh the todo list after deletion
+      })
+      .catch(error => {
+        console.error('Error deleting todo', error);
+      });
+  }
 
   startEditing = (id, todo) => {
     this.setState({
       editingTodoId: id,
-      editedTodoText: todo
+      editedTodoText: todo,
     });
-  };
+  }
 
   cancelEditing = () => {
     this.setState({
       editingTodoId: null,
-      editedTodoText: ''
+      editedTodoText: '',
     });
-  };
+  }
 
   saveTodo = (id) => {
     const { editedTodoText } = this.state;
-    if (!editedTodoText.trim()) {
-      console.log('Todo text cannot be empty');
-      return;
-    }
-
-    axios
-      .put(`http://localhost:4000/api/todo/${id}`, { todo: editedTodoText })
+    axios.put(`/api/todo/${id}`, { todo: editedTodoText })
       .then(response => {
         console.log('Todo updated successfully');
-        this.fetchTodos(); // Refresh the todo list after editing
+        this.fetchTodos(); // Refresh the todo list after updating
         this.cancelEditing();
       })
       .catch(error => {
-        console.log(error);
+        console.error('Error updating todo', error);
       });
-  };
+  }
 
   toggleComplete = (id) => {
-    const { todos, completedTodos } = this.state;
-    const todoToToggle = todos.find(todo => todo._id === id);
+    const todo = this.state.todos.find(todo => todo._id === id);
+    if (!todo) return;
 
-    if (!todoToToggle) {
-      return;
-    }
-
-    const updatedTodos = todos.filter(todo => todo._id !== id);
-    todoToToggle.complete = !todoToToggle.complete;
-
-    if (todoToToggle.complete) {
-      this.setState({
-        todos: updatedTodos,
-        completedTodos: [...completedTodos, todoToToggle],
-      });
-    } else {
-      this.setState({
-        todos: [...updatedTodos, todoToToggle],
-        completedTodos: completedTodos.filter(todo => todo._id !== id),
-      });
-    }
-
-    axios
-      .put(`http://localhost:4000/api/todo/${id}`, { complete: todoToToggle.complete })
+    axios.put(`/api/todo/${id}`, { complete: !todo.complete })
       .then(response => {
-        console.log('Todo completion status updated successfully');
+        console.log('Todo completion status updated');
+        this.fetchTodos(); // Refresh the todo list after toggling completion status
       })
       .catch(error => {
-        console.log(error);
+        console.error('Error updating todo completion status', error);
       });
-  };
+  }
 
   handleTodoTextChange = (newText) => {
     this.setState({ editedTodoText: newText });
-  };
-
+  }
 
   render() {
-    const { todos, completedTodos, editingTodoId, editedTodoText } = this.state;
-    console.log('Todo list:', todos);
-    console.log('Completed Todo list:', completedTodos);
+    const { isAuthenticated, todos, completedTodos, editingTodoId, editedTodoText } = this.state;
+
+    if (!isAuthenticated) {
+      return <div>Please log in to view todos.</div>;
+    }
+
     return (
       <div>
         <h2>Todo List</h2>

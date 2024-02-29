@@ -17,10 +17,9 @@ function Login() {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    axios.post('http://localhost:4000/login', { email, password })
+    axios.post('http://localhost:4000/login', { email, password }, { withCredentials: true })
       .then(response => {
-        //localStorage.setItem('token', response.data.token);
-        console.log('Login successful (login):', response.data);
+        console.log('Login successful:', response.data);
         navigate('/home'); // Redirect to home page on successful login
       })
       .catch(error => {

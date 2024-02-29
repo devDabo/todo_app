@@ -5,18 +5,21 @@ const Todo = require('../schema/schema');
 
 // Get the current user's ID from the JWT token
 const getCurrentUserId = (req) => {
+  console.log('Authorization header:',req.headers.authorization);
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return null;
   }
 
   const token = authHeader.split(' ')[1];
+  console.log('Extracted Token: ', token);
   
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    console.log('Decoded token: ', decoded);
     return decoded.userId; 
   } catch (err) {
-    console.error(err);
+    console.error('JWT Verification error: ', err.message);
     return null;
   }
 };
@@ -24,11 +27,17 @@ const getCurrentUserId = (req) => {
 router.post('/', async (req, res) => {
   try {
     const { todo, complete } = req.body;
+    const userId = getCurrentUserId(req);
+    console.log(userId); // Use this to get the userId from the token
+
+    if (!userId) {
+      return res.status(401).json({ message: 'Unauthorized' });
+    }
 
     const addTodo = new Todo({
       todo: todo,
       complete: complete || false,
-      user: req.userId,
+      user: userId, // Now correctly using the userId extracted from the token
     });
 
     const doc = await addTodo.save();
