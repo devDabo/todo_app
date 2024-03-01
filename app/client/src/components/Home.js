@@ -19,20 +19,16 @@ class Home extends Component {
   }
 
   checkAuthentication = () => {
-    axios.get('/api/auth/verify')
+    axios.get('/api/auth/status', { withCredentials: true })
       .then(response => {
-        if (response.status === 200 && response.data.isAuthenticated) {
-          this.setState({ isAuthenticated: true });
+        this.setState({ isAuthenticated: response.data.authenticated });
+        if (response.data.authenticated) {
           this.fetchTodos();
-        } else {
-          this.setState({ isAuthenticated: false });
-          // Redirect to login or show a message
         }
       })
       .catch(error => {
         console.error('Authentication verification failed', error);
         this.setState({ isAuthenticated: false });
-        // Redirect to login or show a message
       });
   }
 
@@ -44,18 +40,12 @@ class Home extends Component {
 
     axios.get('/api/todo')
       .then(response => {
-        if (response.data && Array.isArray(response.data)) {
-          const completedTodos = response.data.filter(todo => todo.complete);
-          const incompleteTodos = response.data.filter(todo => !todo.complete);
-          this.setState({
-            todos: incompleteTodos,
-            completedTodos: completedTodos,
-          });
-        }
+        this.setState({ 
+          todos: response.data.filter(todo => !todo.complete),
+          completedTodos: response.data.filter(todo => todo.complete),
+        });
       })
-      .catch(error => {
-        console.error('Error fetching todos', error);
-      });
+      .catch(error => console.error('Error fetching todos', error));
   }
 
   addTodo = (todoText) => {
