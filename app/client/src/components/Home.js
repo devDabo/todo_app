@@ -3,7 +3,6 @@ import axios from 'axios';
 import Form from './Form';
 
 axios.defaults.withCredentials = true;
-axios.defaults.baseURL = 'http://localhost:4000';
 
 class Home extends Component {
   state = {
@@ -19,7 +18,7 @@ class Home extends Component {
   }
 
   checkAuthentication = () => {
-    axios.get('/api/auth/status', { withCredentials: true })
+    axios.get('http://localhost:4000/api/auth/status', { withCredentials: true })
       .then(response => {
         this.setState({ isAuthenticated: response.data.authenticated });
         if (response.data.authenticated) {
@@ -33,26 +32,23 @@ class Home extends Component {
   }
 
   fetchTodos = () => {
-    if (!this.state.isAuthenticated) {
-      console.log('Not authenticated');
-      return;
-    }
-
-    axios.get('/api/todo')
+    axios.get('http://localhost:4000/api/todo', { withCredentials: true })
       .then(response => {
-        this.setState({ 
-          todos: response.data.filter(todo => !todo.complete),
-          completedTodos: response.data.filter(todo => todo.complete),
+        const completedTodos = response.data.filter(todo => todo.complete);
+        const incompleteTodos = response.data.filter(todo => !todo.complete);
+        this.setState({
+          todos: incompleteTodos,
+          completedTodos: completedTodos,
         });
       })
       .catch(error => console.error('Error fetching todos', error));
   }
-
+  
   addTodo = (todoText) => {
-    axios.post('/api/todo', { todo: todoText })
+    axios.post('http://localhost:4000/api/todo', { todo: todoText, withCredentials: true })
       .then(response => {
         console.log('Todo added successfully');
-        this.fetchTodos(); // Refresh the todo list after adding a new todo
+        this.fetchTodos();
       })
       .catch(error => {
         console.error('Error adding todo', error);
@@ -60,10 +56,10 @@ class Home extends Component {
   }
 
   deleteTodo = (id) => {
-    axios.delete(`/api/todo/${id}`)
+    axios.delete(`http://localhost:4000/api/todo/${id}`)
       .then(response => {
         console.log('Todo deleted successfully');
-        this.fetchTodos(); // Refresh the todo list after deletion
+        this.fetchTodos();
       })
       .catch(error => {
         console.error('Error deleting todo', error);
@@ -86,10 +82,10 @@ class Home extends Component {
 
   saveTodo = (id) => {
     const { editedTodoText } = this.state;
-    axios.put(`/api/todo/${id}`, { todo: editedTodoText })
+    axios.put(`http://localhost:4000/api/todo/${id}`, { todo: editedTodoText })
       .then(response => {
         console.log('Todo updated successfully');
-        this.fetchTodos(); // Refresh the todo list after updating
+        this.fetchTodos();
         this.cancelEditing();
       })
       .catch(error => {
@@ -101,7 +97,7 @@ class Home extends Component {
     const todo = this.state.todos.find(todo => todo._id === id);
     if (!todo) return;
 
-    axios.put(`/api/todo/${id}`, { complete: !todo.complete })
+    axios.put(`http://localhost:4000/api/todo/${id}`, { complete: !todo.complete })
       .then(response => {
         console.log('Todo completion status updated');
         this.fetchTodos(); // Refresh the todo list after toggling completion status
