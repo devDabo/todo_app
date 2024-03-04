@@ -45,10 +45,10 @@ class Home extends Component {
   }
   
   addTodo = (todoText) => {
-    axios.post('http://localhost:4000/api/todo', { todo: todoText, withCredentials: true })
+    axios.post('http://localhost:4000/api/todo', { todo: todoText }, { withCredentials: true })
       .then(response => {
         console.log('Todo added successfully');
-        this.fetchTodos();
+        this.fetchTodos(); // Refresh the todo list
       })
       .catch(error => {
         console.error('Error adding todo', error);
