@@ -5,18 +5,13 @@ const Todo = require('../schema/schema');
 
 // Get the current user's ID from the JWT token
 const getCurrentUserId = (req) => {
-  console.log('Authorization header:',req.headers.authorization);
-  const authHeader = req.headers.authorization;
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+  const token = req.cookies.accessToken;
+  if (!token) {
     return null;
   }
 
-  const token = authHeader.split(' ')[1];
-  console.log('Extracted Token: ', token);
-  
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    console.log('Decoded token: ', decoded);
     return decoded.userId; 
   } catch (err) {
     console.error('JWT Verification error: ', err.message);

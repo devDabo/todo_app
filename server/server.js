@@ -36,6 +36,7 @@ app.use('/register', registerRouter);
 app.use('/login', loginRoute);
 app.use('/api/auth', logoutRoute);
 app.use('/api/auth', statusRoute);
+app.use(cookieParser());
 
 //start server
 app.listen(port, () => console.log(`App listening on port ${port}`))
