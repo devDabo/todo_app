@@ -1,80 +1,63 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import Form from './components/Form';
-import Table from './components/Table';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './components/Login';
 import Register from './components/Register';
 import Home from './components/Home';
 import './App.css';
 
-class App extends Component {
-  state = {
-    authenticated: false,
-    todoText: ''
-  };
+axios.defaults.withCredentials = true; // Ensure credentials are sent with each request
 
-  componentDidMount() {
-    // Check for a token in local storage
-    const token = localStorage.getItem('token');
-  
-    // Set the authenticated state based on whether the token exists
-    this.setState({ authenticated: !!token });
-  }
+function App() {
+  const [authenticated, setAuthenticated] = useState(false);
 
-  handleLogin = () => {
-    this.setState({ authenticated: true });
-  };
+  useEffect(() => {
+    checkAuthenticationStatus();
+  }, []);
 
-  handleLogout = () => {
-    this.setState({ authenticated: false });
-  };
-
-  onSubmitTodo = () => {
-    const { todoText } = this.state;
-
-    axios
-      .post('http://localhost:4000/api/todo', { todo: todoText })
+  const checkAuthenticationStatus = () => {
+    axios.get('http://localhost:4000/api/auth/status')
       .then(response => {
-        console.log(response.data);
-        this.tableComponent.fetchTodos();
+        if (response.data.authenticated) {
+          setAuthenticated(true);
+        } else {
+          setAuthenticated(false);
+        }
       })
       .catch(error => {
-        console.log(error);
+        console.error("Authentication check failed", error);
+        setAuthenticated(false);
       });
   };
 
-  handleTodoTextChange = todoText => {
-    this.setState({ todoText });
+  const handleLoginSuccess = () => {
+    setAuthenticated(true);
   };
 
-  render() {
-    const { authenticated } = this.state;
+  const handleLogout = () => {
+    axios.post('http://localhost:4000/api/auth/logout')
+      .then(() => {
+        setAuthenticated(false);
+      })
+      .catch(error => {
+        console.error("Logout failed", error);
+      });
+  };
 
-    return (
-      <BrowserRouter>
-        <div className="App">
-          <h1>Todo App</h1>
-          {authenticated && (
-            <button onClick={this.handleLogout}>Logout</button>
-          )}
-          <Routes>
-            <Route path="/login" element={<Login onLogin={this.handleLogin} />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/home" element={authenticated ? <Home /> : <Navigate to="/login" />} />
-            <Route path="/todos" element={
-              <>
-                <Form onTodoTextChange={this.handleTodoTextChange} onSubmitTodo={this.onSubmitTodo} />
-                <button onClick={this.onSubmitTodo}>Add todo</button>
-                <Table ref={instance => (this.tableComponent = instance)} />
-              </>
-            } />
-            <Route path="*" element={<Navigate to={authenticated ? "/home" : "/login"} />} />
-          </Routes>
-        </div>
-      </BrowserRouter>
-    );
-  }
+  return (
+    <Router>
+      <div className="App">
+        <h1>Todo App</h1>
+        {authenticated && <button onClick={handleLogout}>Logout</button>}
+        <Routes>
+          <Route path="/login" element={!authenticated ? <Login onLoginSuccess={handleLoginSuccess} /> : <Navigate replace to="/home" />} />
+          <Route path="/register" element={!authenticated ? <Register /> : <Navigate replace to="/home" />} />
+          <Route path="/home" element={authenticated ? <Home /> : <Navigate replace to="/login" />} />
+          <Route path="*" element={<Navigate replace to={authenticated ? "/home" : "/login"} />} />
+        </Routes>
+      </div>
+    </Router>
+  );
 }
 
 export default App;
