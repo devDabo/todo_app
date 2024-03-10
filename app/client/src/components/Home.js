@@ -116,6 +116,8 @@ class Home extends Component {
 
     if (!isAuthenticated) {
       return <div>Please log in to view todos.</div>;
+    } else {
+      console.log("User authenticated, showing login page");
     }
 
     return (

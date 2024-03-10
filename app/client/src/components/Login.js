@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 
-function Login() {
+function Login({ onLoginSuccess }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -20,7 +20,10 @@ function Login() {
     axios.post('http://localhost:4000/login', { email, password }, { withCredentials: true })
       .then(response => {
         console.log('Login successful:', response.data);
-        navigate('/home'); // Redirect to home page on successful login
+        if(onLoginSuccess) {
+          onLoginSuccess();
+        }
+        navigate('/home');
       })
       .catch(error => {
         const errorMessage = error.response && error.response.data.message
