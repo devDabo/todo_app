@@ -4,13 +4,14 @@ import axios from 'axios';
 import Table from '../Table';
 
 // Mock axios
-jest.mock('axios');
+jest.mock('axios', () => ({
+  get: jest.fn(() => Promise.resolve({ data: mockTodos })),
+  delete: jest.fn(() => Promise.resolve()),
+  put: jest.fn(() => Promise.resolve()),
+}));
 
 beforeEach(() => {
-    // Mock axios.get as before
     axios.get.mockResolvedValue({ data: mockTodos });
-  
-    // Mock axios.put to resolve with an empty object to simulate a successful response
     axios.put.mockResolvedValue({});
   });
 
@@ -20,32 +21,31 @@ const mockTodos = [
 ];
 
 describe('Table Component', () => {
-  beforeEach(() => {
-    // Clear all instances and calls to constructor and all methods:
-    axios.get.mockResolvedValue({ data: mockTodos });
-  });
-
   test('fetches todos on component mount and displays them', async () => {
     render(<Table />);
 
-    // Wait for the todos to be fetched and displayed
     await waitFor(() => {
       expect(screen.getByText('Test todo 1')).toBeInTheDocument();
       expect(screen.getByText('Test todo 2')).toBeInTheDocument();
     });
   });
+
   test('toggles the completion status of a todo', async () => {
     render(<Table />);
   
-    // Wait for the todo items to be fetched and rendered
     const toggleCheckbox = await screen.findByRole('checkbox', { name: 'Toggle Test todo 1' });
-  
-    // Interact with the checkbox
     fireEvent.click(toggleCheckbox);
-  
-    // Add assertions as necessary, for example:
-    // Expect the checkbox to be checked after the click
     expect(toggleCheckbox).toBeChecked();
   });
 
+  test('deletes a todo', async () => {
+    render(<Table />);
+    await waitFor(() => expect(screen.getByText('Test todo 1')).toBeInTheDocument());
+    const deleteButton = await screen.findByRole('button', { name: `Delete Test todo 1` });
+    fireEvent.click(deleteButton);
+    // Wait for the todo item to be removed from the DOM
+    await waitFor(() => {
+      expect(screen.queryByText('Test todo 1')).not.toBeInTheDocument();
+    });
+  });
 });
