@@ -20,15 +20,15 @@ function Login({ onLoginSuccess }) {
     axios.post('http://localhost:4000/login', { email, password }, { withCredentials: true })
       .then(response => {
         console.log('Login successful:', response.data);
-        if(onLoginSuccess) {
+        if (onLoginSuccess) {
           onLoginSuccess();
         }
         navigate('/home');
       })
       .catch(error => {
         const errorMessage = error.response && error.response.data.message
-                           ? error.response.data.message
-                           : 'Login failed';
+          ? error.response.data.message
+          : 'Login failed';
         setError(errorMessage);
       });
   };
@@ -39,8 +39,9 @@ function Login({ onLoginSuccess }) {
       {error && <p className="error-message">{error}</p>}
       <form onSubmit={handleSubmit}>
         <div className="form-group">
-          <label>Email:</label>
+          <label htmlFor="email">Email:</label>
           <input
+            id="email"
             type="email"
             name="email"
             value={email}
@@ -49,8 +50,9 @@ function Login({ onLoginSuccess }) {
           />
         </div>
         <div className="form-group">
-          <label>Password:</label>
+          <label htmlFor="password">Password:</label>
           <input
+            id="password"
             type="password"
             name="password"
             value={password}

@@ -3,13 +3,15 @@ import React, { useState } from 'react';
 const Form = ({ onFormSubmit }) => {
   const [todoText, setTodoText] = useState('');
 
-  // Simplified handleChange function
   const handleChange = e => {
     setTodoText(e.target.value);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (todoText.trim() === '') {
+      return;
+    }
     onFormSubmit(todoText);
     setTodoText('');
   };
