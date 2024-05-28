@@ -48,8 +48,9 @@ class Register extends Component {
         {errorMessage && <p className="error-message">{errorMessage}</p>}
         <form onSubmit={this.handleSubmit}>
           <div className="form-group">
-            <label>Email:</label>
+            <label htmlFor="email">Email:</label>
             <input
+              id="email"
               type="email"
               name="email"
               value={email}
@@ -58,8 +59,9 @@ class Register extends Component {
             />
           </div>
           <div className="form-group">
-            <label>Password:</label>
+            <label htmlFor="password">Password:</label>
             <input
+              id="password"
               type="password"
               name="password"
               value={password}
@@ -68,8 +70,9 @@ class Register extends Component {
             />
           </div>
           <div className="form-group">
-            <label>Confirm Password:</label>
+            <label htmlFor="confirmPassword">Confirm Password:</label>
             <input
+              id="confirmPassword"
               type="password"
               name="confirmPassword"
               value={confirmPassword}

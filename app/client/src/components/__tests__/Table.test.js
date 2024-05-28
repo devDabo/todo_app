@@ -11,9 +11,10 @@ jest.mock('axios', () => ({
 }));
 
 beforeEach(() => {
-    axios.get.mockResolvedValue({ data: mockTodos });
-    axios.put.mockResolvedValue({});
-  });
+  axios.get.mockResolvedValue({ data: mockTodos });
+  axios.put.mockResolvedValue({});
+  axios.delete.mockResolvedValue({});
+});
 
 const mockTodos = [
   { _id: '1', todo: 'Test todo 1', complete: false },
@@ -43,6 +44,8 @@ describe('Table Component', () => {
     await waitFor(() => expect(screen.getByText('Test todo 1')).toBeInTheDocument());
     const deleteButton = await screen.findByRole('button', { name: `Delete Test todo 1` });
     fireEvent.click(deleteButton);
+    // Wait for the axios.delete call to complete
+    await waitFor(() => expect(axios.delete).toHaveBeenCalledWith('http://localhost:4000/api/todo/1'));
     // Wait for the todo item to be removed from the DOM
     await waitFor(() => {
       expect(screen.queryByText('Test todo 1')).not.toBeInTheDocument();

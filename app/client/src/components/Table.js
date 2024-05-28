@@ -193,7 +193,7 @@ class Table extends Component {
                     />
                   </td>
                   <td>
-                    <button onClick={() => this.deleteTodo(todo._id)}>Delete</button>
+                    <button onClick={() => this.deleteTodo(todo._id)} aria-label={`Delete ${todo.todo}`}>Delete</button>
                   </td>
                 </tr>
               ))}
