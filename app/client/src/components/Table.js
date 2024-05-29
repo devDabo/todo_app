@@ -161,17 +161,15 @@ class Table extends Component {
                 <td>
                   {editingTodoId === todo._id ? (
                     <>
-                      <button onClick={() => this.saveTodo(todo._id)}>Save</button>
-                      <button onClick={() => this.cancelEditing()}>Cancel</button>
+                      <button onClick={() => this.saveTodo(todo._id)} aria-label={`Save ${todo.todo}`}>Save</button>
+                      <button onClick={() => this.cancelEditing()} aria-label={`Cancel ${todo.todo}`}>Cancel</button>
                     </>
                   ) : (
-                    <button onClick={() => this.startEditing(todo._id, todo.todo)}>Edit</button>
+                    <button onClick={() => this.startEditing(todo._id, todo.todo)} aria-label={`Edit ${todo.todo}`}>Edit</button>
                   )}
                 </td>
                 <td>
-                  <button onClick={() => this.deleteTodo(todo._id)}
-                  aria-label={`Delete ${todo.todo}`}
-                  >Delete</button>
+                  <button onClick={() => this.deleteTodo(todo._id)} aria-label={`Delete ${todo.todo}`}>Delete</button>
                 </td>
               </tr>
             ))}
