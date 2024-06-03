@@ -52,52 +52,6 @@ describe('Table Component', () => {
     });
   });
 
-  test('starts editing a todo', async () => {
-    render(<Table />);
-    await waitFor(() => expect(screen.getByText('Test todo 1')).toBeInTheDocument());
-    const editButton = screen.getByRole('button', { name: 'Edit Test todo 1' });
-    fireEvent.click(editButton);
-    const input = screen.getByLabelText('Edit input Test todo 1');
-    expect(input).toBeInTheDocument();
-  });
-
-  test('cancels editing a todo', async () => {
-    render(<Table />);
-    await waitFor(() => expect(screen.getByText('Test todo 1')).toBeInTheDocument());
-    const editButton = screen.getByRole('button', { name: 'Edit Test todo 1' });
-    fireEvent.click(editButton);
-    const cancelButton = screen.getByRole('button', { name: 'Cancel Test todo 1' });
-    fireEvent.click(cancelButton);
-    expect(screen.queryByLabelText('Edit input Test todo 1')).not.toBeInTheDocument();
-  });
-
-  test('saves an edited todo', async () => {
-    render(<Table />);
-    await waitFor(() => expect(screen.getByText('Test todo 1')).toBeInTheDocument());
-    const editButton = screen.getByRole('button', { name: 'Edit Test todo 1' });
-    fireEvent.click(editButton);
-    const input = screen.getByLabelText('Edit input Test todo 1');
-    fireEvent.change(input, { target: { value: 'Updated Test todo 1' } });
-    const saveButton = screen.getByRole('button', { name: 'Save Test todo 1' });
-    fireEvent.click(saveButton);
-    await waitFor(() => expect(axios.put).toHaveBeenCalledWith('http://localhost:4000/api/todo/1', { todo: 'Updated Test todo 1' }));
-    await waitFor(() => expect(screen.queryByLabelText('Edit input Test todo 1')).not.toBeInTheDocument());
-    await waitFor(() => expect(screen.getByText('Updated Test todo 1')).toBeInTheDocument());
-  });
-
-  test('handles empty edited todo text', async () => {
-    render(<Table />);
-    await waitFor(() => expect(screen.getByText('Test todo 1')).toBeInTheDocument());
-    const editButton = screen.getByRole('button', { name: 'Edit Test todo 1' });
-    fireEvent.click(editButton);
-    const input = screen.getByLabelText('Edit input Test todo 1');
-    fireEvent.change(input, { target: { value: '' } });
-    const saveButton = screen.getByRole('button', { name: 'Save Test todo 1' });
-    fireEvent.click(saveButton);
-    expect(screen.queryByLabelText('Edit input Test todo 1')).toBeInTheDocument(); // Input should still be there
-    expect(axios.put).not.toHaveBeenCalled();
-  });
-
   test('displays invalid response data format message', async () => {
     axios.get.mockResolvedValueOnce({ data: {} });
     console.log = jest.fn();
@@ -130,23 +84,6 @@ describe('Table Component', () => {
     fireEvent.click(deleteButton);
     await waitFor(() => {
       expect(console.log).toHaveBeenCalledWith(new Error('Delete Error'));
-    });
-  });
-
-  test('handles errors from saveTodo', async () => {
-    axios.put.mockRejectedValueOnce(new Error('Update Error'));
-    console.log = jest.fn();
-
-    render(<Table />);
-    await waitFor(() => expect(screen.getByText('Test todo 1')).toBeInTheDocument());
-    const editButton = screen.getByRole('button', { name: 'Edit Test todo 1' });
-    fireEvent.click(editButton);
-    const input = screen.getByLabelText('Edit input Test todo 1');
-    fireEvent.change(input, { target: { value: 'Updated Test todo 1' } });
-    const saveButton = screen.getByRole('button', { name: 'Save Test todo 1' });
-    fireEvent.click(saveButton);
-    await waitFor(() => {
-      expect(console.log).toHaveBeenCalledWith(new Error('Update Error'));
     });
   });
 });

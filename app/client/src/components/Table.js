@@ -145,18 +145,19 @@ class Table extends Component {
                       type="text"
                       value={editedTodoText}
                       onChange={(e) => this.setState({ editedTodoText: e.target.value })}
+                      aria-label={`Edit input ${todo.todo}`}
                     />
                   ) : (
                     todo.todo
                   )}
                 </td>
                 <td>
-                <input
-                  type="checkbox"
-                  checked={todo.complete}
-                  aria-label={`Toggle ${todo.todo}`}
-                  onChange={() => this.toggleComplete(todo._id)}
-                />
+                  <input
+                    type="checkbox"
+                    checked={todo.complete}
+                    aria-label={`Toggle ${todo.todo}`}
+                    onChange={() => this.toggleComplete(todo._id)}
+                  />
                 </td>
                 <td>
                   {editingTodoId === todo._id ? (
@@ -182,12 +183,12 @@ class Table extends Component {
               {completedTodos.map(todo => (
                 <tr key={todo._id}>
                   <td>{todo.todo}</td>
-                    <td>
+                  <td>
                     <input
                       type="checkbox"
                       checked={todo.complete}
                       onChange={() => this.toggleComplete(todo._id)}
-                      aria-label={`Toggle ${todo.todo}`} // Adding aria-label
+                      aria-label={`Toggle ${todo.todo}`}
                     />
                   </td>
                   <td>
