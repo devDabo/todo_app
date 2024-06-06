@@ -67,10 +67,10 @@ router.delete('/:id', async (req, res) => {
 
 router.get('/', async (req, res) => {
   try {
-const userId = req.user._id; // Adjust according to how user information is stored in req.user
+    const userId = req.user._id; // Adjust according to how user information is stored in req.user
 
-const todos = await Todo.find({ user: userId });
-res.json(todos);
+    const todos = await Todo.find({ user: userId });
+    res.json(todos);
   } catch (err) {
     console.log(err);
     res.status(500).json({ error: 'An error occurred' });
