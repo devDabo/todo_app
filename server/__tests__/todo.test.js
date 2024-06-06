@@ -5,7 +5,6 @@ const jwt = require('jsonwebtoken');
 const Todo = require('../schema/schema');
 const todoRouter = require('../routes/todo');
 const authMiddleware = require('../middleware/authMiddleware');
-const { getCurrentUserId } = require('../routes/todo'); // Import the getCurrentUserId function
 
 const app = express();
 app.use(express.json());
