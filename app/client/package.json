@@ -13,10 +13,25 @@
     "react-scripts": "5.0.1",
     "web-vitals": "^2.1.4"
   },
+  "jest": {
+    "transform": {},
+    "coverageReporters": [
+      "clover",
+      "json",
+      "lcov",
+      [
+        "text",
+        {
+          "skipFull": true
+        }
+      ]
+    ]
+  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test --transformIgnorePatterns \"node_modules/(?!axios)/\"",
+    "test-old": "node_modules/jest/bin/jest.js --coverage --runInBand",
+    "test": "react-scripts test . --coverage --transformIgnorePatterns \"node_modules/(?!axios)/\"",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -36,5 +51,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "babel-jest": "^29.7.0",
+    "jest": "^27.5.1"
   }
 }

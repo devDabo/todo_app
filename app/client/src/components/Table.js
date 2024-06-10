@@ -145,33 +145,32 @@ class Table extends Component {
                       type="text"
                       value={editedTodoText}
                       onChange={(e) => this.setState({ editedTodoText: e.target.value })}
+                      aria-label={`Edit input ${todo.todo}`}
                     />
                   ) : (
                     todo.todo
                   )}
                 </td>
                 <td>
-                <input
-                  type="checkbox"
-                  checked={todo.complete}
-                  aria-label={`Toggle ${todo.todo}`}
-                  onChange={() => this.toggleComplete(todo._id)}
-                />
+                  <input
+                    type="checkbox"
+                    checked={todo.complete}
+                    aria-label={`Toggle ${todo.todo}`}
+                    onChange={() => this.toggleComplete(todo._id)}
+                  />
                 </td>
                 <td>
                   {editingTodoId === todo._id ? (
                     <>
-                      <button onClick={() => this.saveTodo(todo._id)}>Save</button>
-                      <button onClick={() => this.cancelEditing()}>Cancel</button>
+                      <button onClick={() => this.saveTodo(todo._id)} aria-label={`Save ${todo.todo}`}>Save</button>
+                      <button onClick={() => this.cancelEditing()} aria-label={`Cancel ${todo.todo}`}>Cancel</button>
                     </>
                   ) : (
-                    <button onClick={() => this.startEditing(todo._id, todo.todo)}>Edit</button>
+                    <button onClick={() => this.startEditing(todo._id, todo.todo)} aria-label={`Edit ${todo.todo}`}>Edit</button>
                   )}
                 </td>
                 <td>
-                  <button onClick={() => this.deleteTodo(todo._id)}
-                  aria-label={`Delete ${todo.todo}`}
-                  >Delete</button>
+                  <button onClick={() => this.deleteTodo(todo._id)} aria-label={`Delete ${todo.todo}`}>Delete</button>
                 </td>
               </tr>
             ))}
@@ -184,12 +183,12 @@ class Table extends Component {
               {completedTodos.map(todo => (
                 <tr key={todo._id}>
                   <td>{todo.todo}</td>
-                    <td>
+                  <td>
                     <input
                       type="checkbox"
                       checked={todo.complete}
                       onChange={() => this.toggleComplete(todo._id)}
-                      aria-label={`Toggle ${todo.todo}`} // Adding aria-label
+                      aria-label={`Toggle ${todo.todo}`}
                     />
                   </td>
                   <td>

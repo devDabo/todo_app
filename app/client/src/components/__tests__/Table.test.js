@@ -51,4 +51,39 @@ describe('Table Component', () => {
       expect(screen.queryByText('Test todo 1')).not.toBeInTheDocument();
     });
   });
+
+  test('displays invalid response data format message', async () => {
+    axios.get.mockResolvedValueOnce({ data: {} });
+    console.log = jest.fn();
+
+    render(<Table />);
+
+    await waitFor(() => {
+      expect(console.log).toHaveBeenCalledWith('Invalid response data format');
+    });
+  });
+
+  test('handles errors from fetchTodos', async () => {
+    axios.get.mockRejectedValueOnce(new Error('Network Error'));
+    console.log = jest.fn();
+
+    render(<Table />);
+
+    await waitFor(() => {
+      expect(console.log).toHaveBeenCalledWith(new Error('Network Error'));
+    });
+  });
+
+  test('handles errors from deleteTodo', async () => {
+    axios.delete.mockRejectedValueOnce(new Error('Delete Error'));
+    console.log = jest.fn();
+
+    render(<Table />);
+    await waitFor(() => expect(screen.getByText('Test todo 1')).toBeInTheDocument());
+    const deleteButton = await screen.findByRole('button', { name: `Delete Test todo 1` });
+    fireEvent.click(deleteButton);
+    await waitFor(() => {
+      expect(console.log).toHaveBeenCalledWith(new Error('Delete Error'));
+    });
+  });
 });
