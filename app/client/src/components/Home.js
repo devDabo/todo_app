@@ -48,7 +48,10 @@ class Home extends Component {
     axios.post('http://localhost:4000/api/todo', { todo: todoText }, { withCredentials: true })
       .then(response => {
         console.log('Todo added successfully');
-        this.fetchTodos(); // Refresh the todo list
+        const newTodo = response.data;
+        this.setState(prevState => ({
+          todos: [...prevState.todos, newTodo]
+        }));
       })
       .catch(error => {
         console.error('Error adding todo', error);
@@ -59,7 +62,10 @@ class Home extends Component {
     axios.delete(`http://localhost:4000/api/todo/${id}`)
       .then(response => {
         console.log('Todo deleted successfully');
-        this.fetchTodos();
+        this.setState(prevState => ({
+          todos: prevState.todos.filter(todo => todo._id !== id),
+          completedTodos: prevState.completedTodos.filter(todo => todo._id !== id)
+        }));
       })
       .catch(error => {
         console.error('Error deleting todo', error);
@@ -85,8 +91,13 @@ class Home extends Component {
     axios.put(`http://localhost:4000/api/todo/${id}`, { todo: editedTodoText })
       .then(response => {
         console.log('Todo updated successfully');
-        this.fetchTodos();
-        this.cancelEditing();
+        const updatedTodo = response.data;
+        this.setState(prevState => ({
+          todos: prevState.todos.map(todo => todo._id === id ? updatedTodo : todo),
+          completedTodos: prevState.completedTodos.map(todo => todo._id === id ? updatedTodo : todo),
+          editingTodoId: null,
+          editedTodoText: ''
+        }));
       })
       .catch(error => {
         console.error('Error updating todo', error);
@@ -100,7 +111,17 @@ class Home extends Component {
     axios.put(`http://localhost:4000/api/todo/${id}`, { complete: !todo.complete })
       .then(response => {
         console.log('Todo completion status updated');
-        this.fetchTodos(); // Refresh the todo list after toggling completion status
+        const updatedTodo = response.data;
+        this.setState(prevState => {
+          const todos = prevState.todos.filter(todo => todo._id !== id);
+          const completedTodos = prevState.completedTodos.filter(todo => todo._id !== id);
+          if (updatedTodo.complete) {
+            completedTodos.push(updatedTodo);
+          } else {
+            todos.push(updatedTodo);
+          }
+          return { todos, completedTodos };
+        });
       })
       .catch(error => {
         console.error('Error updating todo completion status', error);
