@@ -43,12 +43,11 @@ class Home extends Component {
       })
       .catch(error => console.error('Error fetching todos', error));
   }
-  
+
   addTodo = (todoText) => {
     axios.post('http://localhost:4000/api/todo', { todo: todoText }, { withCredentials: true })
       .then(response => {
-        console.log('Todo added successfully');
-        const newTodo = response.data;
+        const newTodo = response.data.todo; // Accessing the todo object directly
         this.setState(prevState => ({
           todos: [...prevState.todos, newTodo]
         }));
@@ -60,8 +59,7 @@ class Home extends Component {
 
   deleteTodo = (id) => {
     axios.delete(`http://localhost:4000/api/todo/${id}`)
-      .then(response => {
-        console.log('Todo deleted successfully');
+      .then(() => {
         this.setState(prevState => ({
           todos: prevState.todos.filter(todo => todo._id !== id),
           completedTodos: prevState.completedTodos.filter(todo => todo._id !== id)
@@ -72,10 +70,10 @@ class Home extends Component {
       });
   }
 
-  startEditing = (id, todo) => {
+  startEditing = (id, todoText) => {
     this.setState({
       editingTodoId: id,
-      editedTodoText: todo,
+      editedTodoText: todoText,
     });
   }
 
@@ -90,14 +88,12 @@ class Home extends Component {
     const { editedTodoText } = this.state;
     axios.put(`http://localhost:4000/api/todo/${id}`, { todo: editedTodoText })
       .then(response => {
-        console.log('Todo updated successfully');
-        const updatedTodo = response.data;
+        const updatedTodo = response.data.todo; // Accessing the updated todo object directly
         this.setState(prevState => ({
-          todos: prevState.todos.map(todo => todo._id === id ? updatedTodo : todo),
-          completedTodos: prevState.completedTodos.map(todo => todo._id === id ? updatedTodo : todo),
-          editingTodoId: null,
-          editedTodoText: ''
+          todos: prevState.todos.map(todo => (todo._id === id ? updatedTodo : todo)),
+          completedTodos: prevState.completedTodos.map(todo => (todo._id === id ? updatedTodo : todo))
         }));
+        this.cancelEditing();
       })
       .catch(error => {
         console.error('Error updating todo', error);
@@ -105,23 +101,23 @@ class Home extends Component {
   }
 
   toggleComplete = (id) => {
-    const todo = this.state.todos.find(todo => todo._id === id);
+    const todo = this.state.todos.find(todo => todo._id === id) || this.state.completedTodos.find(todo => todo._id === id);
     if (!todo) return;
 
     axios.put(`http://localhost:4000/api/todo/${id}`, { complete: !todo.complete })
       .then(response => {
-        console.log('Todo completion status updated');
-        const updatedTodo = response.data;
-        this.setState(prevState => {
-          const todos = prevState.todos.filter(todo => todo._id !== id);
-          const completedTodos = prevState.completedTodos.filter(todo => todo._id !== id);
-          if (updatedTodo.complete) {
-            completedTodos.push(updatedTodo);
-          } else {
-            todos.push(updatedTodo);
-          }
-          return { todos, completedTodos };
-        });
+        const updatedTodo = response.data.todo; // Accessing the updated todo object directly
+        if (updatedTodo.complete) {
+          this.setState(prevState => ({
+            todos: prevState.todos.filter(todo => todo._id !== id),
+            completedTodos: [...prevState.completedTodos, updatedTodo]
+          }));
+        } else {
+          this.setState(prevState => ({
+            todos: [...prevState.todos, updatedTodo],
+            completedTodos: prevState.completedTodos.filter(todo => todo._id !== id)
+          }));
+        }
       })
       .catch(error => {
         console.error('Error updating todo completion status', error);
@@ -137,8 +133,6 @@ class Home extends Component {
 
     if (!isAuthenticated) {
       return <div>Please log in to view todos.</div>;
-    } else {
-      console.log("User authenticated, showing login page");
     }
 
     return (
@@ -179,7 +173,7 @@ class Home extends Component {
                   {editingTodoId === todo._id ? (
                     <>
                       <button onClick={() => this.saveTodo(todo._id)}>Save</button>
-                      <button onClick={() => this.cancelEditing()}>Cancel</button>
+                      <button onClick={this.cancelEditing}>Cancel</button>
                     </>
                   ) : (
                     <button onClick={() => this.startEditing(todo._id, todo.todo)}>Edit</button>
@@ -206,6 +200,7 @@ class Home extends Component {
                       disabled
                     />
                   </td>
+                  <td></td>
                   <td>
                     <button onClick={() => this.deleteTodo(todo._id)}>Delete</button>
                   </td>
